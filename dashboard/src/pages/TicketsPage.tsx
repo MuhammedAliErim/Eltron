@@ -24,7 +24,7 @@ const STATUS_VARIANTS: Record<string, 'default' | 'success' | 'warning' | 'info'
 export function TicketsPage() {
   const { activeGuild } = useGuild();
   const guildId = activeGuild?.id ?? null;
-  const { tickets, currentTicket, loading, error, pagination, fetchTickets, getTicket, refetch } = useTickets(guildId);
+  const { tickets, loading, error, pagination, fetchTickets, refetch } = useTickets(guildId);
 
   const [statusFilter, setStatusFilter] = useState('');
   const [search, setSearch] = useState('');

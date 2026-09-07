@@ -9,7 +9,6 @@ import { Modal } from '../components/ui/Modal';
 import { Pagination } from '../components/Pagination';
 import { EmptyState, ErrorDisplay, LoadingDisplay } from '../components/ui/EmptyState';
 import { formatRelativeTime } from '../lib/utils';
-import { POLL_STATUSES } from '../lib/constants';
 import type { Poll } from '../lib/types';
 
 const STATUS_VARIANTS: Record<string, 'success' | 'default' | 'danger'> = {

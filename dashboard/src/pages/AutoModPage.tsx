@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useGuild } from '../contexts/GuildContext';
 import { useAutoMod } from '../hooks/useAutoMod';
 import { useToast } from '../contexts/ToastContext';

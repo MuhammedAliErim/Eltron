@@ -22,7 +22,7 @@ const TABS = [
 export function SecurityPage() {
   const { activeGuild } = useGuild();
   const guildId = activeGuild?.id ?? null;
-  const { config, quarantineLogs, loading, error, fetchConfig, updateAntiRaid, updateQuarantine, updateVerification, updateChannelWarning, fetchQuarantineLogs, refetch } = useSecurity(guildId);
+  const { config, quarantineLogs, loading, error, fetchConfig, updateAntiRaid, fetchQuarantineLogs, refetch } = useSecurity(guildId);
   const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState('antiraid');
   const [saving, setSaving] = useState(false);

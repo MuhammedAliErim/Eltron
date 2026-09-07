@@ -11,7 +11,7 @@ import { Modal } from '../components/ui/Modal';
 import { Pagination } from '../components/Pagination';
 import { EmptyState, ErrorDisplay, LoadingDisplay } from '../components/ui/EmptyState';
 import { Avatar } from '../components/ui/Avatar';
-import { formatRelativeTime, classNames } from '../lib/utils';
+import { formatRelativeTime } from '../lib/utils';
 import { MODERATION_TYPES } from '../lib/constants';
 import type { ModerationCase } from '../lib/types';
 
@@ -27,7 +27,7 @@ const ACTION_VARIANTS: Record<string, 'default' | 'success' | 'warning' | 'dange
 export function ModerationPage() {
   const { activeGuild } = useGuild();
   const guildId = activeGuild?.id ?? null;
-  const { cases, currentCase, loading, error, pagination, fetchCases, getCase, refetch } = useModeration(guildId);
+  const { cases, loading, error, pagination, fetchCases, refetch } = useModeration(guildId);
 
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');

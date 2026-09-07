@@ -5,12 +5,10 @@ import { PageHeader } from '../components/PageHeader';
 import { Tabs } from '../components/ui/Tabs';
 import { DataTable, type Column } from '../components/DataTable';
 import { Badge } from '../components/ui/Badge';
-import { FilterBar, FilterSelect } from '../components/FilterBar';
 import { Modal } from '../components/ui/Modal';
 import { Pagination } from '../components/Pagination';
 import { EmptyState, ErrorDisplay, LoadingDisplay } from '../components/ui/EmptyState';
 import { formatRelativeTime } from '../lib/utils';
-import { GIVEAWAY_STATUSES } from '../lib/constants';
 import type { Giveaway } from '../lib/types';
 
 const STATUS_VARIANTS: Record<string, 'success' | 'default' | 'danger'> = {
