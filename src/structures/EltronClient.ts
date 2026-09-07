@@ -1,10 +1,10 @@
-import fs from 'fs';
-import path from 'path';
 import { Client, Collection, GatewayIntentBits, Partials } from 'discord.js';
 import { Command } from './Command';
 import { Event } from './Event';
 import { logger } from '../utils/logger';
 import { env } from '../config/env';
+import { commands } from '../commands';
+import { events } from '../events';
 
 export class EltronClient extends Client {
   public commands: Collection<string, Command> = new Collection();
@@ -46,8 +46,8 @@ export class EltronClient extends Client {
   async start(): Promise<void> {
     logger.info('Starting Eltron Bot...');
 
-    await this.loadCommands();
-    await this.loadEvents();
+    this.loadCommands();
+    this.loadEvents();
 
     await this.login(env.DISCORD_TOKEN);
   }
@@ -80,71 +80,47 @@ export class EltronClient extends Client {
     this.cooldownTimers.delete(key);
   }
 
-  private async loadCommands(): Promise<void> {
-    const commandsPath = path.join(__dirname, '..', 'commands');
-    const commandFolders = fs.readdirSync(commandsPath);
-
+  private loadCommands(): void {
     let loadedCount = 0;
     let failedCount = 0;
 
-    for (const folder of commandFolders) {
-      const folderPath = path.join(commandsPath, folder);
-      const commandFiles = fs.readdirSync(folderPath).filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
-
-      for (const file of commandFiles) {
-        const filePath = path.join(folderPath, file);
-        try {
-          const commandModule = await import(filePath);
-          const command: Command = commandModule.default || commandModule;
-
-          if ('data' in command && 'execute' in command) {
-            this.commands.set(command.data.name, command);
-            loadedCount++;
-          } else {
-            logger.warn(`Command at ${filePath} is missing required "data" or "execute" property.`);
-          }
-        } catch (error) {
-          logger.error({ err: error }, `Failed to load command at ${filePath}`);
-          failedCount++;
+    for (const command of commands) {
+      try {
+        if ('data' in command && 'execute' in command) {
+          this.commands.set(command.data.name, command);
+          loadedCount++;
+        } else {
+          logger.warn('A command is missing required "data" or "execute" property.');
         }
+      } catch (error) {
+        logger.error({ err: error }, 'Failed to load command');
+        failedCount++;
       }
     }
 
     logger.info(`Loaded ${loadedCount} commands${failedCount > 0 ? ` (${failedCount} failed)` : ''}`);
   }
 
-  private async loadEvents(): Promise<void> {
-    const eventsPath = path.join(__dirname, '..', 'events');
-    const eventFolders = fs.readdirSync(eventsPath);
-
+  private loadEvents(): void {
     let loadedCount = 0;
     let failedCount = 0;
 
-    for (const folder of eventFolders) {
-      const folderPath = path.join(eventsPath, folder);
-      const eventFiles = fs.readdirSync(folderPath).filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
-
-      for (const file of eventFiles) {
-        const filePath = path.join(folderPath, file);
-        try {
-          const eventModule = await import(filePath);
-          const event: Event<keyof import('discord.js').ClientEvents> = eventModule.default || eventModule;
-
-          if ('name' in event && 'execute' in event) {
-            if (event.once) {
-              this.once(event.name, (...args) => event.execute(this, ...args));
-            } else {
-              this.on(event.name, (...args) => event.execute(this, ...args));
-            }
-            this.events.set(event.name, event);
-            loadedCount++;
+    for (const event of events) {
+      try {
+        if ('name' in event && 'execute' in event) {
+          if (event.once) {
+            this.once(event.name, (...args) => event.execute(this, ...args));
           } else {
-            logger.warn(`Event at ${filePath} is missing required "name" or "execute" property.`);
+            this.on(event.name, (...args) => event.execute(this, ...args));
           }
-        } catch (error) {
-          logger.error({ err: error }, `Failed to load event at ${filePath}`);
-          failedCount++;
+          this.events.set(event.name, event);
+          loadedCount++;
+        } else {
+          logger.warn('An event is missing required "name" or "execute" property.');
         }
+      } catch (error) {
+        logger.error({ err: error }, 'Failed to load event');
+        failedCount++;
       }
     }
 

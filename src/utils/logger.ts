@@ -57,12 +57,19 @@ export const logger = pino({
         }
       : undefined,
   serializers: {
-    err: (err) => ({
-      type: err.constructor?.name || 'Error',
-      message: err.message,
-      code: err.code,
-      errorId: err.errorId,
-    }),
+    err: (err) => {
+      const base: Record<string, unknown> = {
+        type: err.constructor?.name || 'Error',
+        message: err.message,
+        code: err.code,
+        errorId: err.errorId,
+      };
+      if (err.path) base.path = err.path;
+      if (err.syscall) base.syscall = err.syscall;
+      if (err.errno !== undefined) base.errno = err.errno;
+      if (err.stack) base.stack = err.stack;
+      return base;
+    },
   },
 });
 
