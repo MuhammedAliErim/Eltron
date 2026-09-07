@@ -7,9 +7,9 @@ import GuildMemberRemove from './guild/GuildMemberRemove';
 import InteractionCreate from './interaction/InteractionCreate';
 
 export const events: Event<keyof import('discord.js').ClientEvents>[] = [
-  Ready,
-  MessageCreate,
-  GuildMemberAdd,
-  GuildMemberRemove,
-  InteractionCreate,
+  new Ready(),
+  new MessageCreate(),
+  new GuildMemberAdd(),
+  new GuildMemberRemove(),
+  new InteractionCreate(),
 ];

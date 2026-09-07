@@ -5,7 +5,7 @@ import Antiraid from './antiraid/Antiraid';
 import Application from './application/Application';
 import Automod from './automod/Automod';
 import ChannelWarning from './channelwarning/ChannelWarning';
-import Event from './event/Event';
+import EventCommand from './event/Event';
 import Giveaway from './giveaway/Giveaway';
 import Level from './level/Level';
 import Ban from './moderation/Ban';
@@ -32,34 +32,34 @@ import Welcome from './welcome/Welcome';
 import Goodbye from './welcome/Goodbye';
 
 export const commands: Command[] = [
-  Analytics,
-  Antiraid,
-  Application,
-  Automod,
-  ChannelWarning,
-  Event,
-  Giveaway,
-  Level,
-  Ban,
-  Kick,
-  Timeout,
-  Unban,
-  Untimeout,
-  Unwarn,
-  Warn,
-  Warnings,
-  Poll,
-  Quarantine,
-  Reminder,
-  AutoRole,
-  Role,
-  Staff,
-  Ticket,
-  BotInfo,
-  Help,
-  Ping,
-  Verification,
-  Verify,
-  Welcome,
-  Goodbye,
+  new Analytics(),
+  new Antiraid(),
+  new Application(),
+  new Automod(),
+  new ChannelWarning(),
+  new EventCommand(),
+  new Giveaway(),
+  new Level(),
+  new Ban(),
+  new Kick(),
+  new Timeout(),
+  new Unban(),
+  new Untimeout(),
+  new Unwarn(),
+  new Warn(),
+  new Warnings(),
+  new Poll(),
+  new Quarantine(),
+  new Reminder(),
+  new AutoRole(),
+  new Role(),
+  new Staff(),
+  new Ticket(),
+  new BotInfo(),
+  new Help(),
+  new Ping(),
+  new Verification(),
+  new Verify(),
+  new Welcome(),
+  new Goodbye(),
 ];
