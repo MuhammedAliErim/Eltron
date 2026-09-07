@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dashboard/dist/
+
+# Environment files (NEVER commit secrets)
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+coverage/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Supabase
+supabase/.temp/
+
+# Temp files
+Yeni Metin Belgesi.txt
+verify_event_schema.mjs

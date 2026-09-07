@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-eltron-border;
+  }
+
+  body {
+    @apply bg-eltron-bg text-eltron-text antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-eltron-accent ring-offset-2 ring-offset-eltron-bg;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-eltron-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-eltron-subtle;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.eltron.border') transparent;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-eltron-card rounded-xl border border-eltron-border shadow-card;
+  }
+
+  .card-hover {
+    @apply card transition-shadow duration-200 hover:shadow-card-hover;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-eltron-accent rounded-lg transition-colors duration-150 hover:bg-eltron-accent-hover active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-eltron-text bg-eltron-elevated border border-eltron-border rounded-lg transition-colors duration-150 hover:bg-eltron-card hover:border-eltron-border-light active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-eltron-muted rounded-lg transition-colors duration-150 hover:text-eltron-text hover:bg-eltron-elevated active:scale-[0.98];
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-eltron-danger rounded-lg transition-colors duration-150 hover:brightness-110 active:scale-[0.98];
+  }
+
+  .btn-icon {
+    @apply inline-flex items-center justify-center w-9 h-9 rounded-lg text-eltron-muted transition-colors duration-150 hover:text-eltron-text hover:bg-eltron-elevated;
+  }
+
+  .input {
+    @apply w-full px-3 py-2 text-sm text-eltron-text bg-eltron-elevated border border-eltron-border rounded-lg placeholder:text-eltron-subtle transition-colors duration-150 focus:border-eltron-accent focus:ring-1 focus:ring-eltron-accent;
+  }
+
+  .nav-item {
+    @apply flex items-center gap-3 px-3 py-2 text-sm font-medium text-eltron-muted rounded-lg transition-colors duration-150 hover:text-eltron-text hover:bg-eltron-elevated;
+  }
+
+  .nav-item-active {
+    @apply nav-item text-eltron-text bg-eltron-accent-muted text-eltron-accent;
+  }
+
+  .skeleton {
+    @apply bg-eltron-elevated rounded-lg animate-pulse;
+  }
+}
