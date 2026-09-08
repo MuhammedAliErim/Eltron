@@ -47,10 +47,20 @@ SUPABASE_ANON_KEY=REDACTED
 SUPABASE_SERVICE_ROLE_KEY=REDACTED
 SESSION_SECRET=REDACTED_64_CHAR_HEX_STRING
 BOT_OWNERS=YOUR_DISCORD_USER_ID
-API_PORT=3001
-DASHBOARD_URL=https://dashboard.yourdomain.com
-CORS_ORIGIN=https://dashboard.yourdomain.com
+
+# ACLClouds / Pterodactyl: API_PORT must match your allocation port
+API_PORT=YOUR_ALLOCATION_PORT
+DASHBOARD_URL=http://YOUR_IP:YOUR_PORT
+CORS_ORIGIN=http://YOUR_IP:YOUR_PORT
 ```
+
+### ACLClouds Specific Notes
+- `API_PORT` **must** match your Pterodactyl allocation port (e.g., `30413`)
+- Express listens on `0.0.0.0` (all interfaces) by default
+- The API server is externally accessible at `http://YOUR_IP:YOUR_ALLOCATION_PORT`
+- No HTTPS by default — session cookies use `secure: false` and `sameSite: 'lax'`
+- When you add a domain + HTTPS, set `DASHBOARD_URL` to `https://yourdomain.com` to enable secure cookies
+- Discord OAuth2 redirect URI must be registered as `http://YOUR_IP:YOUR_PORT/api/auth/callback`
 
 ---
 
@@ -70,8 +80,9 @@ CORS_ORIGIN=https://dashboard.yourdomain.com
 - [ ] Client ID noted
 - [ ] Client secret generated and saved
 - [ ] **Redirect URLs** configured:
-  - [ ] `https://dashboard.yourdomain.com/auth/callback` (production)
-  - [ ] `http://localhost:5173/auth/callback` (development)
+  - [ ] `https://dashboard.yourdomain.com/api/auth/callback` (production with HTTPS)
+  - [ ] `http://YOUR_IP:YOUR_PORT/api/auth/callback` (ACLClouds / Pterodactyl)
+  - [ ] `http://localhost:5173/api/auth/callback` (local development)
 - [ ] **OAuth2 Scopes** authorized:
   - [ ] `identify` — Basic user info
   - [ ] `guilds` — List user's guilds
@@ -255,15 +266,17 @@ grep -r "DISCORD_CLIENT_SECRET\|SUPABASE_SERVICE_ROLE\|SESSION_SECRET" dashboard
 ### Session Configuration
 - Cookie name: `eltron.sid`
 - `httpOnly`: `true` (prevents XSS)
-- `secure`: `true` in production (HTTPS only)
-- `sameSite`: `none` in production (cross-origin support)
+- `secure`: derived from HTTPS (`DASHBOARD_URL.startsWith('https://')`) — `false` for HTTP
+- `sameSite`: `none` when `secure: true` (cross-origin), `lax` otherwise
 - `maxAge`: 7 days
+- No explicit `domain` — Express uses the request hostname by default
 
 ### Production Checklist
-- [ ] HTTPS configured (required for `secure: true` cookies)
-- [ ] CORS origin matches dashboard URL exactly
-- [ ] OAuth2 redirect URLs registered in Discord Developer Portal
+- [ ] HTTPS configured (required for `secure: true` cookies; optional for same-origin setups)
+- [ ] CORS origin matches dashboard URL exactly (supports comma-separated for multiple origins)
+- [ ] OAuth2 redirect URLs registered in Discord Developer Portal (must include `/api/auth/callback`)
 - [ ] Session secret is 64-char random hex
+- [ ] API_PORT matches your Pterodactyl allocation port
 
 ---
 

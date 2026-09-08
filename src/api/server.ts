@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import session from 'express-session';
+import path from 'path';
+import fs from 'fs';
 import { env } from '../config/env';
 import { logger } from '../utils/logger';
 import { errorHandler } from './middleware/errorHandler';
@@ -25,8 +27,10 @@ import settingsRoutes from './routes/settings';
 
 const app = express();
 
+const corsOrigins = env.CORS_ORIGIN.split(',').map((o) => o.trim()).filter(Boolean);
+
 app.use(cors({
-  origin: env.CORS_ORIGIN,
+  origin: corsOrigins.length === 1 ? corsOrigins[0] : corsOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -34,22 +38,28 @@ app.use(cors({
 
 app.use(express.json({ limit: '10kb' }));
 
+const useSecureCookies = env.NODE_ENV === 'production' && env.DASHBOARD_URL.startsWith('https://');
+
 app.use(session({
   secret: env.SESSION_SECRET || 'dev-session-secret-change-in-production',
   name: 'eltron.sid',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: env.NODE_ENV === 'production',
+    secure: useSecureCookies,
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    sameSite: env.NODE_ENV === 'production' ? 'none' : 'lax',
-    domain: env.NODE_ENV === 'production' ? undefined : 'localhost',
+    sameSite: useSecureCookies ? 'none' : 'lax',
   },
 }));
 
-if (env.NODE_ENV === 'production' && (!env.SESSION_SECRET || env.SESSION_SECRET === 'dev-session-secret-change-in-production')) {
-  throw new Error('SESSION_SECRET must be set to a secure value in production');
+if (env.NODE_ENV === 'production') {
+  if (!env.SESSION_SECRET || env.SESSION_SECRET === 'dev-session-secret-change-in-production') {
+    throw new Error('SESSION_SECRET must be set to a secure value in production');
+  }
+  if (!env.DISCORD_CLIENT_SECRET) {
+    throw new Error('DISCORD_CLIENT_SECRET is required in production');
+  }
 }
 
 app.use('/api', healthRoutes);
@@ -70,6 +80,22 @@ app.use('/api/guilds', eventRoutes);
 app.use('/api/guilds', pollRoutes);
 app.use('/api/guilds', reminderRoutes);
 app.use('/api/guilds', settingsRoutes);
+
+const dashboardDistPath = fs.existsSync(path.join(__dirname, 'dashboard'))
+  ? path.join(__dirname, 'dashboard')
+  : path.join(__dirname, '..', 'dashboard', 'dist');
+
+if (fs.existsSync(dashboardDistPath)) {
+  app.use(express.static(dashboardDistPath));
+  const spaIndex = path.join(dashboardDistPath, 'index.html');
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' || req.path.startsWith('/api')) {
+      next();
+      return;
+    }
+    res.sendFile(spaIndex);
+  });
+}
 
 app.use(errorHandler);
 

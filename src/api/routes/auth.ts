@@ -8,7 +8,7 @@ import { logError } from '../../utils/logger';
 
 const router = Router();
 
-const REDIRECT_URI = `${env.DASHBOARD_URL}/auth/callback`;
+const REDIRECT_URI = `${env.DASHBOARD_URL}/api/auth/callback`;
 
 router.get('/login', rateLimits.auth, (_req: Request, res: Response) => {
   const state = crypto.randomBytes(32).toString('hex');

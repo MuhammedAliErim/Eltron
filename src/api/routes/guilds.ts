@@ -13,21 +13,34 @@ router.get('/', requireAuth, rateLimits.normalGet, async (req: Request, res: Res
   try {
     const { getUserGuilds } = await import('../utils/discord');
     const userGuilds = await getUserGuilds(req.session.accessToken!);
-    const botGuilds = await guildRepository.getAllGuildIds();
-    const botGuildIdSet = new Set(botGuilds);
+    let botGuildIdSet: Set<string> | null = null;
+
+    try {
+      const { GuildRepository } = await import('../../database/repositories/GuildRepository');
+      const guildRepository = new GuildRepository();
+      const botGuilds = await guildRepository.getAllGuildIds();
+      botGuildIdSet = new Set(botGuilds);
+    } catch {
+      // guilds table may not exist yet — show all manageable guilds
+    }
 
     const accessibleGuilds = userGuilds
       .filter((g) => {
         const permissionBigInt = BigInt(g.permissions);
         const manageGuildBit = BigInt('0x0000000000000020');
-        return (permissionBigInt & manageGuildBit) !== 0n && botGuildIdSet.has(g.id);
+        const hasManageGuild = (permissionBigInt & manageGuildBit) !== 0n;
+        if (!hasManageGuild) return false;
+        if (botGuildIdSet && botGuildIdSet.size > 0) {
+          return botGuildIdSet.has(g.id);
+        }
+        return true;
       })
       .map((g) => ({
         id: g.id,
         name: g.name,
         icon: g.icon,
         owner: g.owner,
-        hasBot: true,
+        hasBot: botGuildIdSet ? botGuildIdSet.has(g.id) : false,
       }));
 
     res.json({ data: accessibleGuilds });

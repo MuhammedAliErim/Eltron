@@ -14,7 +14,7 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { user, logout } = useAuth();
-  const { guilds, activeGuild, setActiveGuild } = useGuild();
+  const { guilds, activeGuild, setActiveGuild, loading, error } = useGuild();
   const location = useLocation();
 
   return (
@@ -85,7 +85,9 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             );
           })}
           {guilds.length === 0 && !collapsed && (
-            <p className="px-2 py-4 text-xs text-eltron-subtle text-center">No servers found</p>
+            <p className="px-2 py-4 text-xs text-eltron-subtle text-center">
+              {loading ? 'Loading servers...' : error ? 'Failed to load servers' : 'No servers found'}
+            </p>
           )}
         </div>
       </div>
