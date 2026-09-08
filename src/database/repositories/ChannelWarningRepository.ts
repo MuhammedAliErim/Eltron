@@ -16,13 +16,18 @@ export class ChannelWarningRepository extends BaseRepository {
         .single();
 
       if (error && error.code === 'PGRST116') return null;
-      if (error) throw error;
+      if (error) {
+        const errObj = error as Record<string, unknown>;
+        logError(`[DEBUG guild_channel_warning_config query] guild=${guildId} code=${errObj.code} message=${errObj.message} details=${errObj.details} hint=${errObj.hint}`, error);
+        throw error;
+      }
 
       return data as GuildChannelWarningConfigRow;
     } catch (error) {
       if (this.isTableMissingError(error)) return this.handleTableError(error, `channel warning config for guild ${guildId}`);
       if (error instanceof DatabaseQueryError) throw error;
-      logError(`Error fetching channel warning config for guild ${guildId}`, error);
+      const errObj = error as Record<string, unknown>;
+      logError(`[DEBUG guild_channel_warning_config catch] guild=${guildId} code=${errObj.code} message=${errObj.message} details=${errObj.details} hint=${errObj.hint}`, error);
       throw new DatabaseQueryError(`Failed to fetch channel warning config for guild ${guildId}`);
     }
   }

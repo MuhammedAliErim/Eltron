@@ -79,7 +79,8 @@ export async function guildGuard(req: Request, res: Response, next: NextFunction
 
     next();
   } catch (error) {
-    logError('Guild guard check failed', error);
+    const errObj = error as Record<string, unknown>;
+    logError(`[DEBUG guildGuard] guild=${guildId} code=${errObj.code} message=${errObj.message} stack=${errObj.stack}`, error);
     sendError(res, 500, 'Failed to verify guild access', 'GUILD_CHECK_FAILED');
   }
 }

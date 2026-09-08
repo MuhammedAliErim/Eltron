@@ -91,12 +91,17 @@ export class AutomodRepository extends BaseRepository {
         .eq('enabled', true)
         .order('created_at', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        const errObj = error as Record<string, unknown>;
+        logError(`[DEBUG automod_rules query] guild=${guildId} code=${errObj.code} message=${errObj.message} details=${errObj.details} hint=${errObj.hint}`, error);
+        throw error;
+      }
 
       return (data as AutomodRuleRow[]) || [];
     } catch (error) {
       if (this.isTableMissingError(error)) return this.handleTableError(error, `automod rules for guild ${guildId}`) as unknown as AutomodRuleRow[];
-      logError(`Error fetching automod rules for guild ${guildId}`, error);
+      const errObj = error as Record<string, unknown>;
+      logError(`[DEBUG automod_rules catch] guild=${guildId} code=${errObj.code} message=${errObj.message} details=${errObj.details} hint=${errObj.hint}`, error);
       throw new DatabaseQueryError(`Failed to fetch automod rules for guild ${guildId}`);
     }
   }
