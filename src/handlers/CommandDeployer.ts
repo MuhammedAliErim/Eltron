@@ -19,21 +19,21 @@ const sanitize = (obj: unknown): unknown => {
 };
 
 export const deployCommands = async (client: EltronClient): Promise<void> => {
+  const commands: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
+  const commandNames: string[] = [];
+
+  for (const [name, command] of client.commands) {
+    try {
+      const json = command.data.toJSON() as RESTPostAPIChatInputApplicationCommandsJSONBody;
+      commands.push(json);
+      commandNames.push(name);
+    } catch (err) {
+      logError(`Serialize failed: "${name}"`, err);
+    }
+  }
+
   try {
     const rest = new REST({ version: '10' }).setToken(env.DISCORD_TOKEN);
-
-    const commands: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
-    const commandNames: string[] = [];
-
-    for (const [name, command] of client.commands) {
-      try {
-        const json = command.data.toJSON() as RESTPostAPIChatInputApplicationCommandsJSONBody;
-        commands.push(json);
-        commandNames.push(name);
-      } catch (err) {
-        logError(`Serialize failed: "${name}"`, err);
-      }
-    }
 
     logger.info(`=== DEPLOY START: ${commands.length} commands ===`);
     for (let i = 0; i < commands.length; i++) {
