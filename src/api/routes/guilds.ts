@@ -54,15 +54,23 @@ router.get('/:id', requireAuth, guildGuard, rateLimits.normalGet, async (req: Re
   const guildId = req.params.id as string;
 
   try {
-    const guildSettings = await guildRepository.get(guildId);
+    const guild = await guildRepository.getOrCreateGuild(
+      guildId,
+      req.guildMember!.guild.name,
+      req.session.user!.id
+    );
 
     res.json({
       data: {
-        id: req.guildMember!.guild.id,
-        name: req.guildMember!.guild.name,
+        id: guild.guild_id,
+        name: guild.name,
         icon: req.guildMember!.guild.icon,
         owner: req.guildMember!.guild.owner,
-        settings: guildSettings || null,
+        settings: {
+          language: guild.language,
+          timezone: guild.timezone,
+          ...(guild.settings as Record<string, unknown> || {}),
+        },
       },
     });
   } catch (error) {

@@ -26,12 +26,11 @@ router.get(
     const guildId = req.params.id as string;
 
     try {
-      const guild = await guildRepo.get(guildId);
-
-      if (!guild) {
-        sendError(res, 404, 'Guild not found', 'GUILD_NOT_FOUND');
-        return;
-      }
+      const guild = await guildRepo.getOrCreateGuild(
+        guildId,
+        req.guildMember!.guild.name,
+        req.session.user!.id
+      );
 
       sendData(res, {
         guild_id: guild.guild_id,
@@ -56,6 +55,12 @@ router.put(
     const guildId = req.params.id as string;
 
     try {
+      await guildRepo.getOrCreateGuild(
+        guildId,
+        req.guildMember!.guild.name,
+        req.guildMember!.guild.owner ? req.guildMember!.guild.id : '0'
+      );
+
       const result = await guildRepo.updateSettings(guildId, req.body);
 
       if (!result) {
