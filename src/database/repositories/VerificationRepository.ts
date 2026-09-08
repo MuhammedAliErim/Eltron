@@ -20,7 +20,8 @@ export class VerificationRepository extends BaseRepository {
 
       return data as GuildVerificationConfigRow;
     } catch (error) {
-      if (error instanceof Error && 'code' in error) throw error;
+      if (this.isTableMissingError(error)) return this.handleTableError(error, `verification config for guild ${guildId}`);
+      if (error instanceof DatabaseQueryError) throw error;
       logError(`Error fetching verification config for guild ${guildId}`, error);
       throw new DatabaseQueryError(`Failed to fetch verification config for guild ${guildId}`);
     }

@@ -20,7 +20,8 @@ export class ChannelWarningRepository extends BaseRepository {
 
       return data as GuildChannelWarningConfigRow;
     } catch (error) {
-      if (error instanceof Error && 'code' in error) throw error;
+      if (this.isTableMissingError(error)) return this.handleTableError(error, `channel warning config for guild ${guildId}`);
+      if (error instanceof DatabaseQueryError) throw error;
       logError(`Error fetching channel warning config for guild ${guildId}`, error);
       throw new DatabaseQueryError(`Failed to fetch channel warning config for guild ${guildId}`);
     }

@@ -22,7 +22,8 @@ export class AutomodRepository extends BaseRepository {
 
       return data as GuildAutomodConfigRow;
     } catch (error) {
-      if (error instanceof Error && 'code' in error) throw error;
+      if (this.isTableMissingError(error)) return this.handleTableError(error, `automod config for guild ${guildId}`);
+      if (error instanceof DatabaseQueryError) throw error;
       logError(`Error fetching automod config for guild ${guildId}`, error);
       throw new DatabaseQueryError(`Failed to fetch automod config for guild ${guildId}`);
     }
@@ -94,6 +95,7 @@ export class AutomodRepository extends BaseRepository {
 
       return (data as AutomodRuleRow[]) || [];
     } catch (error) {
+      if (this.isTableMissingError(error)) return this.handleTableError(error, `automod rules for guild ${guildId}`) as unknown as AutomodRuleRow[];
       logError(`Error fetching automod rules for guild ${guildId}`, error);
       throw new DatabaseQueryError(`Failed to fetch automod rules for guild ${guildId}`);
     }

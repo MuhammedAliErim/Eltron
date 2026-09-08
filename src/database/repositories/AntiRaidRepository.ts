@@ -20,7 +20,8 @@ export class AntiRaidRepository extends BaseRepository {
 
       return data as GuildAntiRaidConfigRow;
     } catch (error) {
-      if (error instanceof Error && 'code' in error) throw error;
+      if (this.isTableMissingError(error)) return this.handleTableError(error, `anti-raid config for guild ${guildId}`);
+      if (error instanceof DatabaseQueryError) throw error;
       logError(`Error fetching anti-raid config for guild ${guildId}`, error);
       throw new DatabaseQueryError(`Failed to fetch anti-raid config for guild ${guildId}`);
     }

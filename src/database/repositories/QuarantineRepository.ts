@@ -20,7 +20,8 @@ export class QuarantineRepository extends BaseRepository {
 
       return data as GuildQuarantineConfigRow;
     } catch (error) {
-      if (error instanceof Error && 'code' in error) throw error;
+      if (this.isTableMissingError(error)) return this.handleTableError(error, `quarantine config for guild ${guildId}`);
+      if (error instanceof DatabaseQueryError) throw error;
       logError(`Error fetching quarantine config for guild ${guildId}`, error);
       throw new DatabaseQueryError(`Failed to fetch quarantine config for guild ${guildId}`);
     }
