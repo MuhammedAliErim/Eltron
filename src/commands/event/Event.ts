@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, Colors, EmbedBuilder, APIEmbedField } from 'discord.js';
+import { SlashCommandBuilder, Colors, EmbedBuilder, APIEmbedField, MessageFlags } from 'discord.js';
 import { Command, type CommandExecuteOptions } from '../../structures/Command';
 import {
   createEvent,
@@ -182,7 +182,7 @@ export default class EventCommand extends Command {
           const events = await listEventsByGuild(guildId, status);
 
           if (events.length === 0) {
-            await interaction.reply({ content: '📭 No events found', ephemeral: true });
+            await interaction.reply({ content: '📭 No events found', flags: MessageFlags.Ephemeral });
             return;
           }
 
@@ -275,7 +275,7 @@ export default class EventCommand extends Command {
           const participants = await getEventParticipants(eventId, guildId);
 
           if (participants.length === 0) {
-            await interaction.reply({ content: '📭 No participants yet', ephemeral: true });
+            await interaction.reply({ content: '📭 No participants yet', flags: MessageFlags.Ephemeral });
             return;
           }
 
@@ -303,7 +303,7 @@ export default class EventCommand extends Command {
             const winners = await selectEventWinners(eventId, guildId, userId, count, hasManageGuild, BOT_OWNERS);
 
             if (winners.length === 0) {
-              await interaction.reply({ content: '❌ No eligible participants available', ephemeral: true });
+              await interaction.reply({ content: '❌ No eligible participants available', flags: MessageFlags.Ephemeral });
               return;
             }
 
@@ -321,7 +321,7 @@ export default class EventCommand extends Command {
             const event = await getEventById(eventId, guildId);
 
             if (event.status !== 'ENDED') {
-              await interaction.reply({ content: '❌ Event must be ended before viewing winners', ephemeral: true });
+              await interaction.reply({ content: '❌ Event must be ended before viewing winners', flags: MessageFlags.Ephemeral });
               return;
             }
 
@@ -343,7 +343,7 @@ export default class EventCommand extends Command {
           const winners = await rerollEventWinners(eventId, guildId, userId, count, hasManageGuild, BOT_OWNERS);
 
           if (winners.length === 0) {
-            await interaction.reply({ content: '❌ No eligible participants available for reroll', ephemeral: true });
+            await interaction.reply({ content: '❌ No eligible participants available for reroll', flags: MessageFlags.Ephemeral });
             return;
           }
 
@@ -362,7 +362,7 @@ export default class EventCommand extends Command {
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
-      const reply = { content: `❌ ${errorMessage}`, ephemeral: true };
+      const reply = { content: `❌ ${errorMessage}`, flags: MessageFlags.Ephemeral };
 
       if (interaction.deferred || interaction.replied) {
         await interaction.editReply(reply).catch(() => {});

@@ -1,6 +1,7 @@
 import {
   SlashCommandBuilder,
   PermissionFlagsBits,
+  MessageFlags,
   type ChatInputCommandInteraction,
   type GuildMember,
 } from 'discord.js';
@@ -120,7 +121,7 @@ export default class StaffCommand extends Command {
   async execute({ interaction }: CommandExecuteOptions): Promise<void> {
     const subcommand = interaction.options.getSubcommand();
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const member = interaction.member as GuildMember;
     if (!member) {

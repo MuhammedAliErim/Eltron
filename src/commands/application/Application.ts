@@ -1,6 +1,7 @@
 import {
   SlashCommandBuilder,
   PermissionFlagsBits,
+  MessageFlags,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
@@ -143,7 +144,7 @@ export default class ApplicationCommand extends Command {
   }
 
   private async handleApply(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const type = interaction.options.getString('type', true) as ApplicationType;
     const member = interaction.member as GuildMember;
@@ -192,7 +193,7 @@ export default class ApplicationCommand extends Command {
   async handleModalSubmit(interaction: ModalSubmitInteraction): Promise<void> {
     if (!interaction.customId.startsWith('app_submit:')) return;
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const applicationId = parseInt(interaction.customId.split(':')[1], 10);
     const application = await repo.getApplication(applicationId);
@@ -223,7 +224,7 @@ export default class ApplicationCommand extends Command {
   }
 
   private async handleStatus(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const applicationId = interaction.options.getInteger('application_id');
 
@@ -252,7 +253,7 @@ export default class ApplicationCommand extends Command {
   }
 
   private async handleWithdraw(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const applicationId = interaction.options.getInteger('application_id', true);
     const application = await repo.getApplication(applicationId);
@@ -272,7 +273,7 @@ export default class ApplicationCommand extends Command {
   }
 
   private async handleList(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const status = interaction.options.getString('status') || undefined;
     const type = interaction.options.getString('type') || undefined;
@@ -293,7 +294,7 @@ export default class ApplicationCommand extends Command {
   }
 
   private async handleReview(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const applicationId = interaction.options.getInteger('application_id', true);
     const application = await repo.getApplication(applicationId);
@@ -308,7 +309,7 @@ export default class ApplicationCommand extends Command {
   }
 
   private async handleApprove(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const applicationId = interaction.options.getInteger('application_id', true);
     const application = await repo.getApplication(applicationId);
@@ -323,7 +324,7 @@ export default class ApplicationCommand extends Command {
   }
 
   private async handleReject(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const applicationId = interaction.options.getInteger('application_id', true);
     const reason = interaction.options.getString('reason', true);

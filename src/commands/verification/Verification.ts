@@ -1,6 +1,7 @@
 import {
   SlashCommandBuilder,
   PermissionFlagsBits,
+  MessageFlags,
   EmbedBuilder,
   Colors,
   type ChatInputCommandInteraction,
@@ -81,7 +82,7 @@ export default class VerificationCommand extends Command {
   async execute({ interaction }: CommandExecuteOptions): Promise<void> {
     const subcommand = interaction.options.getSubcommand();
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     switch (subcommand) {
       case 'status':

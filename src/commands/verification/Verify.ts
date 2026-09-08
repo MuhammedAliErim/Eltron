@@ -1,5 +1,6 @@
 import {
   SlashCommandBuilder,
+  MessageFlags,
 } from 'discord.js';
 import { Command } from '../../structures/Command';
 import type { CommandExecuteOptions } from '../../structures/Command';
@@ -25,7 +26,7 @@ export default class VerifyCommand extends Command {
   cooldown = 10;
 
   async execute({ interaction }: CommandExecuteOptions): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const config = await getVerificationConfigWithCache(
       interaction.guildId!,

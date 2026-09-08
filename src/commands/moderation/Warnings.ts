@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, Colors } from 'discord.js';
+import { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, Colors, MessageFlags } from 'discord.js';
 import { Command } from '../../structures/Command';
 import type { CommandExecuteOptions } from '../../structures/Command';
 import { ModerationService } from '../../services/moderation/ModerationService';
@@ -20,7 +20,7 @@ export default class WarningsCommand extends Command {
   async execute({ interaction }: CommandExecuteOptions): Promise<void> {
     const targetUser = interaction.options.getUser('user', true);
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const service = new ModerationService();
     const warnings = await service.getActiveWarnings(interaction.guildId!, targetUser.id);

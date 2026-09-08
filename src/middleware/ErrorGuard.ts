@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, MessageFlags } from 'discord.js';
 import { BotError, generateErrorId } from '../utils/errors';
 import { logger, logError } from '../utils/logger';
 
@@ -32,7 +32,7 @@ export class ErrorGuard {
 
     const reply = {
       content: `An error occurred while executing this command. Error ID: \`${errorId}\``,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
 
     try {

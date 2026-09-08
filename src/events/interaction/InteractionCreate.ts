@@ -1,4 +1,4 @@
-import { Interaction, Collection } from 'discord.js';
+import { Interaction, Collection, MessageFlags } from 'discord.js';
 import { Event } from '../../structures/Event';
 import { EltronClient } from '../../structures/EltronClient';
 import { logError } from '../../utils/logger';
@@ -59,7 +59,7 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
           const expiredTimestamp = Math.round(expirationTime / 1000);
           await interaction.reply({
             content: `You are on cooldown. Try again <t:${expiredTimestamp}:R>.`,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
           return;
         }
@@ -111,7 +111,7 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
           logError(`Error in modal submit for application`, error);
           try {
             if (!interaction.replied && !interaction.deferred) {
-              await interaction.reply({ content: 'An error occurred.', ephemeral: true });
+              await interaction.reply({ content: 'An error occurred.', flags: MessageFlags.Ephemeral });
             }
           } catch {
             // interaction may already be handled
@@ -145,12 +145,12 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
     const giveawayId = parseInt(parts[2], 10);
 
     if (isNaN(giveawayId)) {
-      await interaction.reply({ content: 'Invalid giveaway.', ephemeral: true });
+      await interaction.reply({ content: 'Invalid giveaway.', flags: MessageFlags.Ephemeral });
       return;
     }
 
     if (!interaction.guildId) {
-      await interaction.reply({ content: 'This can only be used in a server.', ephemeral: true });
+      await interaction.reply({ content: 'This can only be used in a server.', flags: MessageFlags.Ephemeral });
       return;
     }
 
@@ -176,7 +176,7 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
           }
         }
 
-        await interaction.reply({ content: result.message, ephemeral: true });
+        await interaction.reply({ content: result.message, flags: MessageFlags.Ephemeral });
       } else if (action === 'leave') {
         const result = await leaveGiveaway(giveawayId, interaction.guildId, interaction.user.id, repo);
 
@@ -196,13 +196,13 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
           }
         }
 
-        await interaction.reply({ content: result.message, ephemeral: true });
+        await interaction.reply({ content: result.message, flags: MessageFlags.Ephemeral });
       }
     } catch (error) {
       logError(`Error handling giveaway button interaction`, error);
       try {
         if (!interaction.replied && !interaction.deferred) {
-          await interaction.reply({ content: 'An error occurred.', ephemeral: true });
+          await interaction.reply({ content: 'An error occurred.', flags: MessageFlags.Ephemeral });
         }
       } catch {
         // interaction may already be handled
@@ -221,12 +221,12 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
     const eventId = parseInt(parts[2], 10);
 
     if (isNaN(eventId)) {
-      await interaction.reply({ content: 'Invalid event.', ephemeral: true });
+      await interaction.reply({ content: 'Invalid event.', flags: MessageFlags.Ephemeral });
       return;
     }
 
     if (!interaction.guildId) {
-      await interaction.reply({ content: 'This can only be used in a server.', ephemeral: true });
+      await interaction.reply({ content: 'This can only be used in a server.', flags: MessageFlags.Ephemeral });
       return;
     }
 
@@ -252,7 +252,7 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
           // channel may not exist
         }
 
-        await interaction.reply({ content: `✅ You've joined **${event.title}**!`, ephemeral: true });
+        await interaction.reply({ content: `✅ You've joined **${event.title}**!`, flags: MessageFlags.Ephemeral });
       } else if (action === 'leave') {
         const { event, participantCount } = await leaveEvent(
           eventId,
@@ -273,13 +273,13 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
           // channel may not exist
         }
 
-        await interaction.reply({ content: `👋 You've left **${event.title}**`, ephemeral: true });
+        await interaction.reply({ content: `👋 You've left **${event.title}**`, flags: MessageFlags.Ephemeral });
       }
     } catch (error) {
       logError(`Error handling event button interaction`, error);
       try {
         if (!interaction.replied && !interaction.deferred) {
-          await interaction.reply({ content: 'An error occurred.', ephemeral: true });
+          await interaction.reply({ content: 'An error occurred.', flags: MessageFlags.Ephemeral });
         }
       } catch {
         // interaction may already be handled
@@ -297,7 +297,7 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
     const action = parts[1];
 
     if (!interaction.guildId) {
-      await interaction.reply({ content: 'This can only be used in a server.', ephemeral: true });
+      await interaction.reply({ content: 'This can only be used in a server.', flags: MessageFlags.Ephemeral });
       return;
     }
 
@@ -308,7 +308,7 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
         const optionId = parseInt(parts[3], 10);
 
         if (isNaN(pollId) || isNaN(optionId)) {
-          await interaction.reply({ content: 'Invalid poll or option.', ephemeral: true });
+          await interaction.reply({ content: 'Invalid poll or option.', flags: MessageFlags.Ephemeral });
           return;
         }
 
@@ -336,12 +336,12 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
           // channel may not exist
         }
 
-        await interaction.reply({ content: '✅ Your vote has been recorded!', ephemeral: true });
+        await interaction.reply({ content: '✅ Your vote has been recorded!', flags: MessageFlags.Ephemeral });
       } else if (action === 'remove') {
         const pollId = parseInt(parts[2], 10);
 
         if (isNaN(pollId)) {
-          await interaction.reply({ content: 'Invalid poll.', ephemeral: true });
+          await interaction.reply({ content: 'Invalid poll.', flags: MessageFlags.Ephemeral });
           return;
         }
 
@@ -367,13 +367,13 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
           // channel may not exist
         }
 
-        await interaction.reply({ content: '🗳️ Your vote has been removed.', ephemeral: true });
+        await interaction.reply({ content: '🗳️ Your vote has been removed.', flags: MessageFlags.Ephemeral });
       }
     } catch (error) {
       logError(`Error handling poll button interaction`, error);
       try {
         if (!interaction.replied && !interaction.deferred) {
-          await interaction.reply({ content: 'An error occurred.', ephemeral: true });
+          await interaction.reply({ content: 'An error occurred.', flags: MessageFlags.Ephemeral });
         }
       } catch {
         // interaction may already be handled

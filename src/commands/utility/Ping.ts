@@ -12,7 +12,7 @@ export default class PingCommand extends Command {
 
   async execute({ client, interaction }: CommandExecuteOptions): Promise<void> {
     const before = Date.now();
-    const sent = await interaction.deferReply({ fetchReply: true });
+    const sent = await interaction.deferReply({ withResponse: true });
     const after = Date.now();
 
     const botLatency = after - before;

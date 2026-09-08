@@ -5,6 +5,7 @@ import {
   StringSelectMenuBuilder,
   ButtonBuilder,
   ButtonStyle,
+  MessageFlags,
   type APIEmbedField,
   type InteractionReplyOptions,
   type InteractionEditReplyOptions,
@@ -57,15 +58,15 @@ export const field = (name: string, value: string, inline = true): APIEmbedField
 export const reply = {
   success: (content: string): InteractionReplyOptions => ({
     content,
-    ephemeral: true,
+    flags: MessageFlags.Ephemeral,
   }),
   error: (content: string): InteractionReplyOptions => ({
     content: `❌ ${content}`,
-    ephemeral: true,
+    flags: MessageFlags.Ephemeral,
   }),
   embed: (embed: EmbedBuilder): InteractionReplyOptions => ({
     embeds: [embed],
-    ephemeral: true,
+    flags: MessageFlags.Ephemeral,
   }),
   embedPublic: (embed: EmbedBuilder): InteractionReplyOptions => ({
     embeds: [embed],

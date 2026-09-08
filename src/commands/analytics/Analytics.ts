@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, Colors, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder, Colors, EmbedBuilder, MessageFlags } from 'discord.js';
 import { Command, type CommandExecuteOptions } from '../../structures/Command';
 import {
   getDailyAnalytics,
@@ -186,7 +186,7 @@ export default class AnalyticsCommand extends Command {
       logError(`Error executing analytics command in guild ${guildId}`, error);
 
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      const reply = { content: `❌ ${errorMessage}`, ephemeral: true };
+      const reply = { content: `❌ ${errorMessage}`, flags: MessageFlags.Ephemeral };
 
       if (interaction.deferred || interaction.replied) {
         await interaction.editReply(reply).catch(() => {});

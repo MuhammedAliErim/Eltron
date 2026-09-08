@@ -31,7 +31,7 @@ export default class HelpCommand extends Command {
     const response = await interaction.reply({
       embeds: [embed],
       components: [row],
-      fetchReply: true,
+      withResponse: true,
     });
 
     const collector = response.createMessageComponentCollector({

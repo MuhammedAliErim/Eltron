@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, Colors, EmbedBuilder, APIEmbedField } from 'discord.js';
+import { SlashCommandBuilder, Colors, EmbedBuilder, APIEmbedField, MessageFlags } from 'discord.js';
 import { Command, type CommandExecuteOptions } from '../../structures/Command';
 import {
   createReminder,
@@ -163,7 +163,7 @@ export default class ReminderCommand extends Command {
       logError(`Error executing reminder command in guild ${guildId}`, error);
 
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      const reply = { content: `❌ ${errorMessage}`, ephemeral: true };
+      const reply = { content: `❌ ${errorMessage}`, flags: MessageFlags.Ephemeral };
 
       if (interaction.deferred || interaction.replied) {
         await interaction.editReply(reply).catch(() => {});

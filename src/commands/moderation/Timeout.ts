@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
+import { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } from 'discord.js';
 import { Command } from '../../structures/Command';
 import type { CommandExecuteOptions } from '../../structures/Command';
 import { ModerationService } from '../../services/moderation/ModerationService';
@@ -39,7 +39,7 @@ export default class TimeoutCommand extends Command {
     const targetMember = await interaction.guild?.members.fetch(targetUser.id).catch(() => null);
 
     if (!targetMember) {
-      await interaction.reply({ content: '❌ User not found in this server.', ephemeral: true });
+      await interaction.reply({ content: '❌ User not found in this server.', flags: MessageFlags.Ephemeral });
       return;
     }
 

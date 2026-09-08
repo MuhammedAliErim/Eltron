@@ -1,6 +1,7 @@
 import {
   SlashCommandBuilder,
   PermissionFlagsBits,
+  MessageFlags,
   type ChatInputCommandInteraction,
   type TextChannel,
   type GuildMember,
@@ -102,7 +103,7 @@ export default class GiveawayCommand extends Command {
 
   async execute({ client, interaction }: CommandExecuteOptions): Promise<void> {
     if (!interaction.guild) {
-      await interaction.reply({ content: 'This command can only be used in a server.', ephemeral: true });
+      await interaction.reply({ content: 'This command can only be used in a server.', flags: MessageFlags.Ephemeral });
       return;
     }
 
@@ -135,7 +136,7 @@ export default class GiveawayCommand extends Command {
     const description = interaction.options.getString('description') || '';
 
     if (!interaction.guildId) {
-      await interaction.reply({ content: 'Guild context required.', ephemeral: true });
+      await interaction.reply({ content: 'Guild context required.', flags: MessageFlags.Ephemeral });
       return;
     }
 
@@ -143,14 +144,14 @@ export default class GiveawayCommand extends Command {
     if (durationMs === null) {
       await interaction.reply({
         content: 'Invalid duration format. Use formats like `30s`, `10m`, `2h`, `7d`.',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
 
     const validation = validateGiveawayParams(durationMs, winnerCount, prize);
     if (!validation.valid) {
-      await interaction.reply({ content: validation.error!, ephemeral: true });
+      await interaction.reply({ content: validation.error!, flags: MessageFlags.Ephemeral });
       return;
     }
 
@@ -159,13 +160,13 @@ export default class GiveawayCommand extends Command {
       : interaction.channel as TextChannel;
 
     if (!targetChannel || !targetChannel.isTextBased()) {
-      await interaction.reply({ content: 'Target channel must be a text channel.', ephemeral: true });
+      await interaction.reply({ content: 'Target channel must be a text channel.', flags: MessageFlags.Ephemeral });
       return;
     }
 
     const botMember = interaction.guild!.members.me;
     if (!botMember) {
-      await interaction.reply({ content: 'Bot member not found.', ephemeral: true });
+      await interaction.reply({ content: 'Bot member not found.', flags: MessageFlags.Ephemeral });
       return;
     }
 
@@ -173,12 +174,12 @@ export default class GiveawayCommand extends Command {
     if (!permissions?.has(PermissionFlagsBits.SendMessages) || !permissions?.has(PermissionFlagsBits.ViewChannel)) {
       await interaction.reply({
         content: `I need View Channel and Send Messages permissions in <#${targetChannel.id}>.`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const endsAt = new Date(Date.now() + durationMs).toISOString();
 
@@ -228,7 +229,7 @@ export default class GiveawayCommand extends Command {
   private async handleList(interaction: ChatInputCommandInteraction): Promise<void> {
     const status = interaction.options.getString('status') || undefined;
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const giveaways = await repo.listGuildGiveaways(interaction.guildId!, status);
 
@@ -239,7 +240,7 @@ export default class GiveawayCommand extends Command {
   private async handleInfo(interaction: ChatInputCommandInteraction): Promise<void> {
     const giveawayId = interaction.options.getInteger('giveaway_id', true);
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const giveaway = await repo.getGiveaway(giveawayId);
     if (!giveaway) {
@@ -264,7 +265,7 @@ export default class GiveawayCommand extends Command {
   ): Promise<void> {
     const giveawayId = interaction.options.getInteger('giveaway_id', true);
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const giveaway = await repo.getGiveaway(giveawayId);
     if (!giveaway) {
@@ -293,7 +294,7 @@ export default class GiveawayCommand extends Command {
   ): Promise<void> {
     const giveawayId = interaction.options.getInteger('giveaway_id', true);
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const giveaway = await repo.getGiveaway(giveawayId);
     if (!giveaway) {
@@ -327,7 +328,7 @@ export default class GiveawayCommand extends Command {
   ): Promise<void> {
     const giveawayId = interaction.options.getInteger('giveaway_id', true);
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const giveaway = await repo.getGiveaway(giveawayId);
     if (!giveaway) {
