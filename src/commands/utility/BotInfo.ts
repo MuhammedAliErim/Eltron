@@ -8,6 +8,7 @@ export default class BotInfoCommand extends Command {
     .setName('botinfo')
     .setDescription('Shows information about the bot.');
 
+  category = 'Utility';
   cooldown = 5;
 
   async execute({ client, interaction }: CommandExecuteOptions): Promise<void> {

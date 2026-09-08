@@ -21,6 +21,7 @@ export default class VerifyCommand extends Command {
       opt.setName('code').setDescription('Verification code (if required)').setRequired(false)
     );
 
+  category = 'Security';
   cooldown = 10;
 
   async execute({ interaction }: CommandExecuteOptions): Promise<void> {

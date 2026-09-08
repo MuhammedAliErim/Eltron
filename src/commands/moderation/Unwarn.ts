@@ -19,6 +19,7 @@ export default class UnwarnCommand extends Command {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers);
 
+  category = 'Moderation';
   cooldown = 5;
   requiredPermissions = [PermissionFlagsBits.ModerateMembers];
 

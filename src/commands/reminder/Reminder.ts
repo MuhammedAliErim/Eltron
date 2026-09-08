@@ -45,6 +45,7 @@ export default class ReminderCommand extends Command {
       .addIntegerOption(opt => opt.setName('id').setDescription('Reminder ID').setRequired(true))
     );
 
+  category = 'Utility';
   cooldown = 3000;
 
   async execute({ interaction }: CommandExecuteOptions): Promise<void> {

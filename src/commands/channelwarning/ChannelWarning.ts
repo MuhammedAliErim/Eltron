@@ -91,6 +91,7 @@ export default class ChannelWarningCommand extends Command {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels);
 
+  category = 'Security';
   cooldown = 5;
   requiredPermissions = [PermissionFlagsBits.ManageChannels];
 

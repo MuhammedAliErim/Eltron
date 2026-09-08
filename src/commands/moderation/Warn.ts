@@ -14,6 +14,7 @@ export default class WarnCommand extends Command {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers);
 
+  category = 'Moderation';
   cooldown = 5;
   requiredPermissions = [PermissionFlagsBits.ModerateMembers];
 

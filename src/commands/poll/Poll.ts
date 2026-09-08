@@ -13,6 +13,7 @@ import { BOT_OWNERS } from '../../config/bot';
 import { logError } from '../../utils/logger';
 import { GuildOnlyError, ValidationError } from '../../utils/errors';
 import { PollRepository } from '../../database/repositories/PollRepository';
+import { parseDuration } from '../../utils/duration';
 
 const pollRepository = new PollRepository();
 
@@ -65,7 +66,8 @@ export default class PollCommand extends Command {
       .addIntegerOption(opt => opt.setName('poll_id').setDescription('Poll ID').setRequired(true))
     );
 
-  cooldown = 3000;
+  category = 'Events & Giveaways';
+  cooldown = 3;
 
   async execute({ interaction }: CommandExecuteOptions): Promise<void> {
     if (!interaction.guildId) throw new GuildOnlyError();
@@ -101,11 +103,11 @@ export default class PollCommand extends Command {
 
           let endsAt: string | undefined;
           if (durationRaw) {
-            const durationMs = parseDuration(durationRaw);
-            if (durationMs <= 0) {
-              throw new ValidationError('Invalid duration format. Examples: 1h, 30m, 7d');
+            const durationResult = parseDuration(durationRaw);
+            if (!durationResult.valid) {
+              throw new ValidationError(durationResult.error!, 'duration');
             }
-            endsAt = new Date(Date.now() + durationMs).toISOString();
+            endsAt = new Date(Date.now() + durationResult.milliseconds!).toISOString();
           }
 
           const { poll, options } = await createPoll({
@@ -239,21 +241,5 @@ export default class PollCommand extends Command {
         await interaction.reply(reply).catch(() => {});
       }
     }
-  }
-}
-
-function parseDuration(duration: string): number {
-  const match = duration.match(/^(\d+)(s|m|h|d)$/);
-  if (!match) return 0;
-
-  const value = parseInt(match[1], 10);
-  const unit = match[2];
-
-  switch (unit) {
-    case 's': return value * 1000;
-    case 'm': return value * 60 * 1000;
-    case 'h': return value * 60 * 60 * 1000;
-    case 'd': return value * 24 * 60 * 60 * 1000;
-    default: return 0;
   }
 }

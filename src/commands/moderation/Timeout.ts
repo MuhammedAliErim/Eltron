@@ -22,6 +22,7 @@ export default class TimeoutCommand extends Command {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers);
 
+  category = 'Moderation';
   cooldown = 5;
   requiredPermissions = [PermissionFlagsBits.ModerateMembers];
 

@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, Colors } from 'discord.js';
 import { Command } from '../../structures/Command';
 import type { CommandExecuteOptions } from '../../structures/Command';
 
@@ -7,27 +7,32 @@ export default class PingCommand extends Command {
     .setName('ping')
     .setDescription('Shows the bot latency and API latency.');
 
+  category = 'Utility';
   cooldown = 5;
 
   async execute({ client, interaction }: CommandExecuteOptions): Promise<void> {
-    const sent = await interaction.reply({ content: 'Pinging...', fetchReply: true });
+    const before = Date.now();
+    const sent = await interaction.deferReply({ fetchReply: true });
+    const after = Date.now();
 
-    const botLatency = sent.createdTimestamp - interaction.createdTimestamp;
+    const botLatency = after - before;
     const apiLatency = Math.round(client.ws.ping);
 
     const formatLatency = (ms: number): string => {
-      if (ms < 100) return `\`${ms}ms\` Good`;
-      if (ms < 200) return `\`${ms}ms\` Normal`;
-      return `\`${ms}ms\` Slow`;
+      if (ms < 100) return `\`${ms}ms\` ✅`;
+      if (ms < 200) return `\`${ms}ms\` ⚠️`;
+      return `\`${ms}ms\` 🔴`;
     };
 
-    await interaction.editReply({
-      content: [
-        '**Pong!**',
-        '',
-        `**Bot Latency:** ${formatLatency(botLatency)}`,
-        `**API Latency:** ${formatLatency(apiLatency)}`,
-      ].join('\n'),
-    });
+    const embed = new EmbedBuilder()
+      .setTitle('🏓 Pong!')
+      .setColor(Colors.Blurple)
+      .addFields(
+        { name: 'Bot Latency', value: formatLatency(botLatency), inline: true },
+        { name: 'API Latency', value: formatLatency(apiLatency), inline: true },
+      )
+      .setTimestamp();
+
+    await interaction.editReply({ embeds: [embed] });
   }
 }

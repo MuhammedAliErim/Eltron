@@ -17,6 +17,7 @@ export default class UnbanCommand extends Command {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers);
 
+  category = 'Moderation';
   cooldown = 5;
   requiredPermissions = [PermissionFlagsBits.BanMembers];
 

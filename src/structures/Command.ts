@@ -33,6 +33,11 @@ export abstract class Command {
   public developerOnly?: boolean;
 
   /**
+   * Category for /help grouping
+   */
+  public category?: string;
+
+  /**
    * The main execution function for the command
    */
   abstract execute(options: CommandExecuteOptions): Promise<void> | void;

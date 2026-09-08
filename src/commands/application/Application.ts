@@ -118,6 +118,7 @@ export default class ApplicationCommand extends Command {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild);
 
+  category = 'Staff';
   cooldown = 5;
 
   async execute({ interaction }: CommandExecuteOptions): Promise<void> {

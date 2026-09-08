@@ -55,6 +55,7 @@ export default class GoodbyeCommand extends Command {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild);
 
+  category = 'Server Management';
   cooldown = 3;
 
   async execute({ interaction }: CommandExecuteOptions): Promise<void> {

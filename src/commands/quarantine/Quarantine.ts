@@ -101,6 +101,7 @@ export default class QuarantineCommand extends Command {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers);
 
+  category = 'Security';
   cooldown = 5;
   requiredPermissions = [PermissionFlagsBits.BanMembers];
 

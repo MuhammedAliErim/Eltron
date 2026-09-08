@@ -91,7 +91,8 @@ export default class AnalyticsCommand extends Command {
       .addStringOption(opt => opt.setName('to').setDescription('End date (YYYY-MM-DD)').setRequired(true))
     );
 
-  cooldown = 5000;
+  category = 'Utility';
+  cooldown = 5;
 
   async execute({ interaction }: CommandExecuteOptions): Promise<void> {
     if (!interaction.guildId) throw new GuildOnlyError();

@@ -128,6 +128,7 @@ export default class EventCommand extends Command {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- discord.js builder pattern limitation
     ) as any;
 
+  category = 'Events & Giveaways';
   cooldown = 0;
 
   async execute({ interaction }: CommandExecuteOptions): Promise<void> {
@@ -360,11 +361,17 @@ export default class EventCommand extends Command {
         }
       }
     } catch (error) {
-      if (error instanceof MissingPermissionsError || error instanceof BusinessRuleError || error instanceof GuildOnlyError || error instanceof ValidationError) {
-        await interaction.reply({ content: `❌ ${error.message}`, ephemeral: true });
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      const reply = { content: `❌ ${errorMessage}`, ephemeral: true };
+
+      if (interaction.deferred || interaction.replied) {
+        await interaction.editReply(reply).catch(() => {});
       } else {
+        await interaction.reply(reply).catch(() => {});
+      }
+
+      if (!(error instanceof MissingPermissionsError || error instanceof BusinessRuleError || error instanceof GuildOnlyError || error instanceof ValidationError)) {
         logError('Error in /event command', error);
-        await interaction.reply({ content: '❌ An unexpected error occurred', ephemeral: true });
       }
     }
   }

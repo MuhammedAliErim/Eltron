@@ -75,6 +75,7 @@ export default class AntiraidCommand extends Command {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild);
 
+  category = 'Security';
   cooldown = 5;
   requiredPermissions = [PermissionFlagsBits.ManageGuild];
 

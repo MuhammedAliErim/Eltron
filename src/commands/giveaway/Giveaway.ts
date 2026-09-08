@@ -97,6 +97,7 @@ export default class GiveawayCommand extends Command {
         )
     );
 
+  category = 'Events & Giveaways';
   cooldown = 3;
 
   async execute({ client, interaction }: CommandExecuteOptions): Promise<void> {

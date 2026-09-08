@@ -97,6 +97,7 @@ export default class TicketCommand extends Command {
         )
     );
 
+  category = 'Staff';
   cooldown = 5;
 
   async execute({ interaction }: CommandExecuteOptions): Promise<void> {

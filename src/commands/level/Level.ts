@@ -80,6 +80,7 @@ export default class LevelCommand extends Command {
         )
     );
 
+  category = 'Level & Economy';
   cooldown = 3;
 
   async execute({ interaction }: CommandExecuteOptions): Promise<void> {

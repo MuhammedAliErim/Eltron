@@ -114,6 +114,7 @@ export default class RoleCommand extends Command {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild);
 
+  category = 'Server Management';
   cooldown = 3;
 
   async execute({ interaction }: CommandExecuteOptions): Promise<void> {

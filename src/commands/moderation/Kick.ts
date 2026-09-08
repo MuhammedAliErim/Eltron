@@ -14,6 +14,7 @@ export default class KickCommand extends Command {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers);
 
+  category = 'Moderation';
   cooldown = 5;
   requiredPermissions = [PermissionFlagsBits.KickMembers];
 

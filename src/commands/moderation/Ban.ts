@@ -14,6 +14,7 @@ export default class BanCommand extends Command {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers);
 
+  category = 'Moderation';
   cooldown = 5;
   requiredPermissions = [PermissionFlagsBits.BanMembers];
 

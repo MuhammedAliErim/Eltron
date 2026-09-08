@@ -74,6 +74,7 @@ export default class VerificationCommand extends Command {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild);
 
+  category = 'Security';
   cooldown = 5;
   requiredPermissions = [PermissionFlagsBits.ManageGuild];
 

@@ -5,11 +5,26 @@ import { logger, logError } from '../utils/logger';
 export class ErrorGuard {
   static async handle(error: unknown, interaction: ChatInputCommandInteraction): Promise<void> {
     const errorId = generateErrorId();
+    const subcommand = interaction.options.getSubcommand(false);
+
+    const context = {
+      errorId,
+      command: interaction.commandName,
+      subcommand: subcommand || undefined,
+      userId: interaction.user.id,
+      guildId: interaction.guildId,
+      channelId: interaction.channelId,
+    };
 
     if (error instanceof BotError) {
       logger.error(
-        { errorId, code: error.code, statusCode: error.statusCode, message: error.message },
+        { ...context, code: error.code, statusCode: error.statusCode, message: error.message },
         'Command error'
+      );
+    } else if (error instanceof Error) {
+      logger.error(
+        { ...context, name: error.name, message: error.message, stack: error.stack },
+        'Unexpected command error'
       );
     } else {
       logError('Unexpected command error', error);
