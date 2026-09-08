@@ -50,7 +50,6 @@ export default class EventCommand extends Command {
       .setName('create')
       .setDescription('Create a new event')
       .addStringOption(opt => opt.setName('title').setDescription('Event title').setRequired(true))
-      .addStringOption(opt => opt.setName('description').setDescription('Event description').setRequired(false))
       .addStringOption(opt => opt
         .setName('type')
         .setDescription('Event type')
@@ -63,6 +62,7 @@ export default class EventCommand extends Command {
           { name: 'Other', value: 'OTHER' },
         ))
       .addStringOption(opt => opt.setName('start').setDescription('Start time (ISO 8601)').setRequired(true))
+      .addStringOption(opt => opt.setName('description').setDescription('Event description').setRequired(false))
       .addStringOption(opt => opt.setName('end').setDescription('End time (ISO 8601)').setRequired(false))
       .addIntegerOption(opt => opt.setName('max_participants').setDescription('Max participants').setMinValue(1))
     )
