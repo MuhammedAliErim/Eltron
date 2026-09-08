@@ -8,7 +8,6 @@ import { Command } from '../../structures/Command';
 import type { CommandExecuteOptions } from '../../structures/Command';
 import { COMMAND_CATEGORIES, HELP_CATEGORIES, categorySelectMenu } from '../../utils/ui';
 import type { HelpCategory } from '../../utils/ui';
-import { logger } from '../../utils/logger';
 
 export default class HelpCommand extends Command {
   data = new SlashCommandBuilder()
@@ -28,13 +27,10 @@ export default class HelpCommand extends Command {
       emoji: c.emoji,
     })));
 
-    const response = await interaction.reply({
-      embeds: [embed],
-      components: [row],
-      withResponse: true,
-    });
+    await interaction.reply({ embeds: [embed], components: [row] });
+    const message = await interaction.fetchReply();
 
-    const collector = response.createMessageComponentCollector({
+    const collector = message.createMessageComponentCollector({
       filter: (i) => i.user.id === interaction.user.id,
       time: 120_000,
     });
