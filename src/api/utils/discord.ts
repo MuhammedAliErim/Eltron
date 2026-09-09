@@ -43,9 +43,16 @@ export async function exchangeCode(code: string, redirectUri: string): Promise<D
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    logger.error(`Discord token exchange failed: ${res.status}`);
-    throw new Error(`Discord token exchange failed: ${text}`);
+    const body = await res.text().catch(() => '');
+    let discordCode: number | undefined;
+    let discordMessage: string | undefined;
+    try {
+      const parsed = JSON.parse(body);
+      discordCode = parsed.code;
+      discordMessage = parsed.message;
+    } catch {}
+    logger.error({ status: res.status, discordCode, discordMessage, endpoint: '/oauth2/token' }, '[Discord] exchangeCode failed');
+    throw new Error(`Discord token exchange failed: ${res.status} code=${discordCode ?? 'N/A'} message=${discordMessage ?? 'N/A'}`);
   }
 
   return res.json() as Promise<DiscordTokenResponse>;
@@ -66,7 +73,16 @@ export async function refreshAccessToken(refreshToken: string): Promise<DiscordT
   });
 
   if (!res.ok) {
-    throw new Error('Failed to refresh Discord token');
+    const body = await res.text().catch(() => '');
+    let discordCode: number | undefined;
+    let discordMessage: string | undefined;
+    try {
+      const parsed = JSON.parse(body);
+      discordCode = parsed.code;
+      discordMessage = parsed.message;
+    } catch {}
+    logger.error({ status: res.status, discordCode, discordMessage, endpoint: '/oauth2/token' }, '[Discord] refreshAccessToken failed');
+    throw new Error(`Discord token refresh failed: ${res.status} code=${discordCode ?? 'N/A'} message=${discordMessage ?? 'N/A'}`);
   }
 
   return res.json() as Promise<DiscordTokenResponse>;
@@ -78,7 +94,16 @@ export async function getDiscordUser(accessToken: string): Promise<DiscordUser> 
   });
 
   if (!res.ok) {
-    throw new Error('Failed to fetch Discord user');
+    const body = await res.text().catch(() => '');
+    let discordCode: number | undefined;
+    let discordMessage: string | undefined;
+    try {
+      const parsed = JSON.parse(body);
+      discordCode = parsed.code;
+      discordMessage = parsed.message;
+    } catch {}
+    logger.error({ status: res.status, discordCode, discordMessage, endpoint: '/users/@me' }, '[Discord] getDiscordUser failed');
+    throw new Error(`Discord /users/@me failed: ${res.status} code=${discordCode ?? 'N/A'} message=${discordMessage ?? 'N/A'}`);
   }
 
   return res.json() as Promise<DiscordUser>;
@@ -90,7 +115,16 @@ export async function getUserGuilds(accessToken: string): Promise<DiscordGuild[]
   });
 
   if (!res.ok) {
-    throw new Error('Failed to fetch Discord user guilds');
+    const body = await res.text().catch(() => '');
+    let discordCode: number | undefined;
+    let discordMessage: string | undefined;
+    try {
+      const parsed = JSON.parse(body);
+      discordCode = parsed.code;
+      discordMessage = parsed.message;
+    } catch {}
+    logger.error({ status: res.status, discordCode, discordMessage, endpoint: '/users/@me/guilds' }, '[Discord] getUserGuilds failed');
+    throw new Error(`Discord /users/@me/guilds failed: ${res.status} code=${discordCode ?? 'N/A'} message=${discordMessage ?? 'N/A'}`);
   }
 
   return res.json() as Promise<DiscordGuild[]>;
