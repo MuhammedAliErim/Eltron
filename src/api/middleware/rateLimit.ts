@@ -60,7 +60,7 @@ export function rateLimit(maxRequests: number, windowMs: number) {
 }
 
 export const rateLimits = {
-  auth: rateLimit(5, 60_000),
+  auth: rateLimit(10, 60_000),
   configPut: rateLimit(10, 60_000),
   normalGet: rateLimit(60, 60_000),
   analytics: rateLimit(30, 60_000),
