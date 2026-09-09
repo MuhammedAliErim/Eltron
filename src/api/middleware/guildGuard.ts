@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { getUserGuilds, refreshAccessToken, DiscordGuild } from '../utils/discord';
 import { isAuthenticated, isTokenValid } from '../utils/session';
 import { sendError } from '../utils/response';
-import { logError } from '../../utils/logger';
+import { logError, logger } from '../../utils/logger';
 
 export interface GuildMemberInfo {
   guild: DiscordGuild;
@@ -20,19 +20,31 @@ declare global {
 const MANAGE_GUILD_PERMISSION = '0x0000000000000020';
 
 async function ensureValidToken(req: Request, res: Response): Promise<boolean> {
+  const sessionState = {
+    hasSession: !!req.session,
+    hasUser: !!req.session?.user,
+    hasAccessToken: !!req.session?.accessToken,
+    hasRefreshToken: !!req.session?.refreshToken,
+    hasTokenExpiry: !!req.session?.tokenExpiry,
+    tokenExpiryFuture: req.session?.tokenExpiry ? req.session.tokenExpiry > Date.now() : false,
+  };
+
   if (!isAuthenticated(req)) {
+    logger.warn({ ...sessionState }, '[GuildGuard] ensureValidToken: not authenticated');
     sendError(res, 401, 'Unauthorized', 'NOT_AUTHENTICATED');
     return false;
   }
 
   if (!isTokenValid(req.session.tokenExpiry!)) {
+    logger.info({ ...sessionState }, '[GuildGuard] ensureValidToken: token expired, refreshing');
     try {
       const tokenData = await refreshAccessToken(req.session.refreshToken!);
       req.session.accessToken = tokenData.access_token;
       req.session.refreshToken = tokenData.refresh_token;
       req.session.tokenExpiry = Date.now() + tokenData.expires_in * 1000;
+      logger.info('[GuildGuard] ensureValidToken: token refreshed successfully');
     } catch (error) {
-      logError('Token refresh failed in guildGuard', error);
+      logError('[GuildGuard] ensureValidToken: token refresh failed', error);
       req.session.destroy(() => {});
       sendError(res, 401, 'Token refresh failed', 'TOKEN_REFRESH_FAILED');
       return false;
@@ -44,6 +56,7 @@ async function ensureValidToken(req: Request, res: Response): Promise<boolean> {
 
 export async function guildGuard(req: Request, res: Response, next: NextFunction): Promise<void> {
   const guildId = req.params.guildId || req.params.id;
+  logger.info({ guildId, hasSession: !!req.session, hasUser: !!req.session?.user, hasAccessToken: !!req.session?.accessToken }, '[GuildGuard] called');
 
   if (!guildId) {
     sendError(res, 400, 'Guild ID required', 'GUILD_ID_REQUIRED');
@@ -55,7 +68,13 @@ export async function guildGuard(req: Request, res: Response, next: NextFunction
   }
 
   try {
-    const userGuilds = await getUserGuilds(req.session.accessToken!);
+    const accessToken = req.session.accessToken!;
+    if (!accessToken) {
+      logger.error({ guildId, hasAccessToken: false }, '[GuildGuard] accessToken is null/undefined before getUserGuilds call');
+      sendError(res, 401, 'No access token in session', 'NO_ACCESS_TOKEN');
+      return;
+    }
+    const userGuilds = await getUserGuilds(accessToken);
     const targetGuild = userGuilds.find((g) => g.id === guildId);
 
     if (!targetGuild) {

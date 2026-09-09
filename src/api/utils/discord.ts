@@ -110,6 +110,11 @@ export async function getDiscordUser(accessToken: string): Promise<DiscordUser> 
 }
 
 export async function getUserGuilds(accessToken: string): Promise<DiscordGuild[]> {
+  if (!accessToken) {
+    logger.error({ endpoint: '/users/@me/guilds' }, '[Discord] getUserGuilds skipped: missing access token');
+    throw new Error('getUserGuilds called with missing access token');
+  }
+
   const res = await fetch(`${DISCORD_API}/users/@me/guilds`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
