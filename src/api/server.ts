@@ -40,6 +40,15 @@ app.use(express.json({ limit: '10kb' }));
 
 const useSecureCookies = env.NODE_ENV === 'production' && env.DASHBOARD_URL.startsWith('https://');
 
+logger.info({
+  nodeEnv: env.NODE_ENV,
+  dashboardUrl: env.DASHBOARD_URL,
+  useSecureCookies,
+  cookieSecure: useSecureCookies,
+  cookieSameSite: useSecureCookies ? 'none' : 'lax',
+  corsOrigin: env.CORS_ORIGIN,
+}, '[Server] cookie/CORS config');
+
 app.use(session({
   secret: env.SESSION_SECRET || 'dev-session-secret-change-in-production',
   name: 'eltron.sid',

@@ -4,7 +4,7 @@ import { exchangeCode, getDiscordUser, refreshAccessToken } from '../utils/disco
 import { isAuthenticated, isTokenValid } from '../utils/session';
 import { rateLimits } from '../middleware/rateLimit';
 import { env } from '../../config/env';
-import { logError } from '../../utils/logger';
+import { logError, logger } from '../../utils/logger';
 
 const router = Router();
 
@@ -22,12 +22,15 @@ router.get('/login', rateLimits.auth, (_req: Request, res: Response) => {
     state,
   });
 
+  logger.info({ hasSession: !!(_req as any).session, hasState: !!state }, '[Auth] login initiated');
   res.redirect(`https://discord.com/api/oauth2/authorize?${params.toString()}`);
 });
 
 router.get('/callback', rateLimits.auth, async (req: Request, res: Response) => {
   const code = req.query.code as string;
   const state = req.query.state as string;
+
+  logger.info({ hasCode: !!code, hasState: !!state, hasSession: !!req.session, hasOAuthState: !!(req as any).session?.oauthState }, '[Auth] callback received');
 
   if (!code) {
     res.redirect(`${env.DASHBOARD_URL}?error=no_code`);
@@ -36,6 +39,7 @@ router.get('/callback', rateLimits.auth, async (req: Request, res: Response) => 
 
   const expectedState = (req as any).session?.oauthState;
   if (expectedState && state !== expectedState) {
+    logger.warn('[Auth] callback state mismatch');
     res.redirect(`${env.DASHBOARD_URL}?error=invalid_state`);
     return;
   }
@@ -45,20 +49,33 @@ router.get('/callback', rateLimits.auth, async (req: Request, res: Response) => 
     const tokenData = await exchangeCode(code, REDIRECT_URI);
     const user = await getDiscordUser(tokenData.access_token);
 
+    logger.info({ hasUser: !!user, hasAccessToken: !!tokenData.access_token, hasRefreshToken: !!tokenData.refresh_token }, '[Auth] discord exchange ok, writing session');
+
     req.session.user = user;
     req.session.accessToken = tokenData.access_token;
     req.session.refreshToken = tokenData.refresh_token;
     req.session.tokenExpiry = Date.now() + tokenData.expires_in * 1000;
 
-    res.redirect(`${env.DASHBOARD_URL}/dashboard`);
+    req.session.save((saveErr) => {
+      if (saveErr) {
+        logger.error({ err: saveErr }, '[Auth] session.save failed');
+        res.redirect(`${env.DASHBOARD_URL}?error=session_save_failed`);
+        return;
+      }
+      logger.info({ sessionId: req.sessionID, redirectUrl: `${env.DASHBOARD_URL}/dashboard` }, '[Auth] session saved, redirecting');
+      res.redirect(`${env.DASHBOARD_URL}/dashboard`);
+    });
   } catch (error) {
-    logError('OAuth callback failed', error);
+    logError('[Auth] OAuth callback failed', error);
     res.redirect(`${env.DASHBOARD_URL}?error=auth_failed`);
   }
 });
 
 router.get('/me', rateLimits.auth, async (req: Request, res: Response) => {
-  if (!isAuthenticated(req)) {
+  const authed = isAuthenticated(req);
+  logger.info({ sessionId: req.sessionID, authenticated: authed, hasSession: !!req.session, hasUser: !!req.session?.user, hasTokenExpiry: !!req.session?.tokenExpiry }, '[Auth] /me called');
+
+  if (!authed) {
     res.status(401).json({ error: 'Not authenticated', code: 'NOT_AUTHENTICATED' });
     return;
   }
