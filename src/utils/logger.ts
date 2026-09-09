@@ -20,6 +20,19 @@ const isSensitiveKey = (key: string): boolean =>
   SENSITIVE_PATTERNS.some((p) => p.test(key));
 
 export const sanitizeValue = (value: unknown): unknown => {
+  if (value instanceof Error) {
+    const sanitized: Record<string, unknown> = {
+      name: value.name,
+      message: value.message,
+      stack: value.stack,
+    };
+    for (const [key, val] of Object.entries(value)) {
+      if (!isSensitiveKey(key)) {
+        sanitized[key] = sanitizeValue(val);
+      }
+    }
+    return sanitized;
+  }
   if (typeof value === 'string') {
     for (const pattern of SENSITIVE_PATTERNS) {
       if (pattern.test(value)) return '[REDACTED]';

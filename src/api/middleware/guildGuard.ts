@@ -63,7 +63,15 @@ export async function guildGuard(req: Request, res: Response, next: NextFunction
       return;
     }
 
-    const permissionBigInt = BigInt(targetGuild.permissions);
+    let permissionBigInt: bigint;
+    try {
+      permissionBigInt = BigInt(targetGuild.permissions);
+    } catch (parseError) {
+      logError(`[GuildGuard] BigInt parse failed: permissions="${targetGuild.permissions}" guildId=${guildId} userId=${req.session.user?.id}`, parseError);
+      sendError(res, 500, 'Failed to parse guild permissions', 'PERMISSION_PARSE_FAILED');
+      return;
+    }
+
     const manageGuildBit = BigInt(MANAGE_GUILD_PERMISSION);
     const hasManageGuild = (permissionBigInt & manageGuildBit) !== 0n;
 
@@ -79,8 +87,8 @@ export async function guildGuard(req: Request, res: Response, next: NextFunction
 
     next();
   } catch (error) {
-    const errObj = error as Record<string, unknown>;
-    logError(`[DEBUG guildGuard] guild=${guildId} code=${errObj.code} message=${errObj.message} stack=${errObj.stack}`, error);
+    const msg = error instanceof Error ? error.message : String(error);
+    logError(`[GuildGuard] guild=${guildId} userId=${req.session.user?.id} error=${msg}`, error);
     sendError(res, 500, 'Failed to verify guild access', 'GUILD_CHECK_FAILED');
   }
 }
