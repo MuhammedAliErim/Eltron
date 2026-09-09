@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, Colors, EmbedBuilder, APIEmbedField, MessageFlags } from 'discord.js';
+import { SlashCommandBuilder, Colors, EmbedBuilder, APIEmbedField, MessageFlags, PermissionFlagsBits } from 'discord.js';
 import { Command, type CommandExecuteOptions } from '../../structures/Command';
 import {
   createEvent,
@@ -45,7 +45,6 @@ export default class EventCommand extends Command {
   data = new SlashCommandBuilder()
     .setName('event')
     .setDescription('Manage server events')
-    .setDefaultMemberPermissions(0)
     .addSubcommand(sub => sub
       .setName('create')
       .setDescription('Create a new event')
@@ -142,6 +141,12 @@ export default class EventCommand extends Command {
       const userId = interaction.user.id;
       const isBot = interaction.user.bot;
       const hasManageGuild = interaction.memberPermissions?.has('ManageGuild') ?? false;
+
+      const adminSubcommands = ['create', 'start', 'end', 'cancel', 'winners', 'reroll'];
+      if (adminSubcommands.includes(subcommand) && !hasManageGuild) {
+        await interaction.reply({ content: 'You need Manage Server permission to perform this action.', flags: MessageFlags.Ephemeral });
+        return;
+      }
 
       switch (subcommand) {
         case 'create': {

@@ -65,11 +65,6 @@ export function Header({ onMenuToggle }: HeaderProps) {
           <SearchInput value={search} onChange={setSearch} placeholder="Search..." />
         </div>
 
-        <button className="btn-icon relative" aria-label="Notifications">
-          <Icon name="Bell" size={18} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-eltron-danger rounded-full" aria-hidden="true" />
-        </button>
-
         {user && (
           <div className="flex items-center gap-2 pl-2 border-l border-eltron-border">
             <Avatar userId={user.id} src={user.avatar} alt={user.username} size="sm" />

@@ -261,9 +261,10 @@ export default class RoleCommand extends Command {
     }
 
     try {
-      await role.setHoist(!role.hoist, `Hoist toggled by ${interaction.user.tag}`);
+      const wasHoist = role.hoist;
+      await role.setHoist(!wasHoist, `Hoist toggled by ${interaction.user.tag}`);
       await interaction.editReply({
-        content: `Role hoist ${role.hoist ? 'disabled' : 'enabled'}.`,
+        content: `Role hoist ${wasHoist ? 'disabled' : 'enabled'}.`,
       });
     } catch {
       await interaction.editReply({ content: 'Failed to toggle hoist.' });
@@ -283,9 +284,10 @@ export default class RoleCommand extends Command {
     }
 
     try {
-      await role.setMentionable(!role.mentionable, `Mentionable toggled by ${interaction.user.tag}`);
+      const wasMentionable = role.mentionable;
+      await role.setMentionable(!wasMentionable, `Mentionable toggled by ${interaction.user.tag}`);
       await interaction.editReply({
-        content: `Role mentionable ${role.mentionable ? 'disabled' : 'enabled'}.`,
+        content: `Role mentionable ${wasMentionable ? 'disabled' : 'enabled'}.`,
       });
     } catch {
       await interaction.editReply({ content: 'Failed to toggle mentionable.' });

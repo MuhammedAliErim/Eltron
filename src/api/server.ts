@@ -27,7 +27,24 @@ import settingsRoutes from './routes/settings';
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 const corsOrigins = env.CORS_ORIGIN.split(',').map((o) => o.trim()).filter(Boolean);
+
+for (const origin of corsOrigins) {
+  if (origin === '*') {
+    logger.warn('[Server] CORS wildcard origin detected with credentials enabled - this is a security risk');
+  }
+}
+
+app.use((_req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  next();
+});
 
 app.use(cors({
   origin: corsOrigins.length === 1 ? corsOrigins[0] : corsOrigins,
@@ -50,7 +67,7 @@ logger.info({
 }, '[Server] cookie/CORS config');
 
 app.use(session({
-  secret: env.SESSION_SECRET || 'dev-session-secret-change-in-production',
+  secret: env.SESSION_SECRET as string,
   name: 'eltron.sid',
   resave: false,
   saveUninitialized: false,
@@ -63,9 +80,6 @@ app.use(session({
 }));
 
 if (env.NODE_ENV === 'production') {
-  if (!env.SESSION_SECRET || env.SESSION_SECRET === 'dev-session-secret-change-in-production') {
-    throw new Error('SESSION_SECRET must be set to a secure value in production');
-  }
   if (!env.DISCORD_CLIENT_SECRET) {
     throw new Error('DISCORD_CLIENT_SECRET is required in production');
   }

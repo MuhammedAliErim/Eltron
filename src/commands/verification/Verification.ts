@@ -155,6 +155,11 @@ export default class VerificationCommand extends Command {
         break;
     }
 
+    if (Object.keys(updates).length === 0) {
+      await interaction.editReply({ content: 'No valid setting was specified. Please check your input.' });
+      return;
+    }
+
     ValidationGuard.validate(verificationConfigSchema, updates);
 
     const config = await repo.updateConfig(interaction.guildId!, updates);

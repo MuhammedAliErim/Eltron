@@ -117,7 +117,7 @@ export default class ApplicationCommand extends Command {
           opt.setName('reason').setDescription('Rejection reason').setRequired(true)
         )
     )
-    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild);
+;
 
   category = 'Staff';
   cooldown = 5;
@@ -213,7 +213,7 @@ export default class ApplicationCommand extends Command {
       return;
     }
 
-    const questions = getQuestions(application.type);
+    const questions = getQuestions(application.type).slice(0, 5);
     const answers = questions.map((q) => ({
       questionId: q.id,
       answer: interaction.fields.getTextInputValue(q.id) || '',

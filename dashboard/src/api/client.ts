@@ -29,6 +29,12 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   });
 
   if (!res.ok) {
+    if (res.status === 401) {
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
+      throw new ApiRequestError(res.status, { error: 'Session expired', code: 'UNAUTHORIZED' });
+    }
     const body = await res.json().catch(() => ({ error: 'Request failed', code: 'UNKNOWN' }));
     throw new ApiRequestError(res.status, body);
   }

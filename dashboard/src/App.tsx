@@ -61,22 +61,22 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
-      <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-      <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
-      <Route path="/moderation" element={<ProtectedRoute><ModerationPage /></ProtectedRoute>} />
-      <Route path="/automod" element={<ProtectedRoute><AutoModPage /></ProtectedRoute>} />
-      <Route path="/security" element={<ProtectedRoute><SecurityPage /></ProtectedRoute>} />
-      <Route path="/tickets" element={<ProtectedRoute><TicketsPage /></ProtectedRoute>} />
-      <Route path="/applications" element={<ProtectedRoute><ApplicationsPage /></ProtectedRoute>} />
-      <Route path="/staff" element={<ProtectedRoute><StaffPage /></ProtectedRoute>} />
-      <Route path="/welcome" element={<ProtectedRoute><WelcomePage /></ProtectedRoute>} />
-      <Route path="/roles" element={<ProtectedRoute><RolesPage /></ProtectedRoute>} />
-      <Route path="/leveling" element={<ProtectedRoute><LevelingPage /></ProtectedRoute>} />
-      <Route path="/giveaways" element={<ProtectedRoute><GiveawaysPage /></ProtectedRoute>} />
-      <Route path="/events" element={<ProtectedRoute><EventsPage /></ProtectedRoute>} />
-      <Route path="/polls" element={<ProtectedRoute><PollsPage /></ProtectedRoute>} />
-      <Route path="/reminders" element={<ProtectedRoute><RemindersPage /></ProtectedRoute>} />
-      <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+      <Route path="/dashboard" element={<ProtectedRoute><ErrorBoundary><DashboardPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/analytics" element={<ProtectedRoute><ErrorBoundary><AnalyticsPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/moderation" element={<ProtectedRoute><ErrorBoundary><ModerationPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/automod" element={<ProtectedRoute><ErrorBoundary><AutoModPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/security" element={<ProtectedRoute><ErrorBoundary><SecurityPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/tickets" element={<ProtectedRoute><ErrorBoundary><TicketsPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/applications" element={<ProtectedRoute><ErrorBoundary><ApplicationsPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/staff" element={<ProtectedRoute><ErrorBoundary><StaffPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/welcome" element={<ProtectedRoute><ErrorBoundary><WelcomePage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/roles" element={<ProtectedRoute><ErrorBoundary><RolesPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/leveling" element={<ProtectedRoute><ErrorBoundary><LevelingPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/giveaways" element={<ProtectedRoute><ErrorBoundary><GiveawaysPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/events" element={<ProtectedRoute><ErrorBoundary><EventsPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/polls" element={<ProtectedRoute><ErrorBoundary><PollsPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/reminders" element={<ProtectedRoute><ErrorBoundary><RemindersPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/settings" element={<ProtectedRoute><ErrorBoundary><SettingsPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

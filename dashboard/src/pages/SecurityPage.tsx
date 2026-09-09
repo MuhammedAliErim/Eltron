@@ -79,7 +79,7 @@ export function SecurityPage() {
               <div><span className="text-eltron-subtle">Detection:</span> <Badge variant={config.antiRaid.detection_enabled ? 'success' : 'default'} size="sm" className="ml-2">{config.antiRaid.detection_enabled ? 'On' : 'Off'}</Badge></div>
             </div>
             <div className="mt-4">
-              <Button variant="primary" size="sm" onClick={() => handleSave(updateAntiRaid, { enabled: !config.antiRaid.enabled })} disabled={saving}>
+              <Button variant="primary" size="sm" onClick={() => handleSave(updateAntiRaid, { ...config.antiRaid, enabled: !config.antiRaid.enabled })} disabled={saving}>
                 {config.antiRaid.enabled ? 'Disable Anti-Raid' : 'Enable Anti-Raid'}
               </Button>
             </div>
@@ -102,7 +102,7 @@ export function SecurityPage() {
                 <div><span className="text-eltron-subtle">Auto release:</span> <Badge variant={config.quarantine.auto_release ? 'success' : 'default'} size="sm" className="ml-2">{config.quarantine.auto_release ? 'Yes' : 'No'}</Badge></div>
               </div>
               <div className="mt-4">
-                <Button variant="primary" size="sm" onClick={() => handleSave(updateQuarantine, { enabled: !config.quarantine.enabled })} disabled={saving}>
+                <Button variant="primary" size="sm" onClick={() => handleSave(updateQuarantine, { ...config.quarantine, enabled: !config.quarantine.enabled })} disabled={saving}>
                   {config.quarantine.enabled ? 'Disable Quarantine' : 'Enable Quarantine'}
                 </Button>
               </div>
@@ -134,7 +134,7 @@ export function SecurityPage() {
               <div><span className="text-eltron-subtle">Timeout:</span> <span className="text-eltron-text ml-2">{config.verification.timeout_minutes} min</span></div>
             </div>
             <div className="mt-4">
-              <Button variant="primary" size="sm" onClick={() => handleSave(updateVerification, { enabled: !config.verification.enabled })} disabled={saving}>
+              <Button variant="primary" size="sm" onClick={() => handleSave(updateVerification, { ...config.verification, enabled: !config.verification.enabled })} disabled={saving}>
                 {config.verification.enabled ? 'Disable Verification' : 'Enable Verification'}
               </Button>
             </div>
@@ -157,7 +157,7 @@ export function SecurityPage() {
               <div><span className="text-eltron-subtle">Alert threshold:</span> <span className="text-eltron-text ml-2">{config.channelWarning.alert_threshold}</span></div>
             </div>
             <div className="mt-4">
-              <Button variant="primary" size="sm" onClick={() => handleSave(updateChannelWarning, { enabled: !config.channelWarning.enabled })} disabled={saving}>
+              <Button variant="primary" size="sm" onClick={() => handleSave(updateChannelWarning, { ...config.channelWarning, enabled: !config.channelWarning.enabled })} disabled={saving}>
                 {config.channelWarning.enabled ? 'Disable Channel Warning' : 'Enable Channel Warning'}
               </Button>
             </div>

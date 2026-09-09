@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodSchema, ZodError } from 'zod';
 import { sendError } from '../utils/response';
+import { logger } from '../../utils/logger';
 
 export function validate(schema: ZodSchema, source: 'body' | 'query' | 'params' = 'body') {
   return (req: Request, res: Response, next: NextFunction): void => {
@@ -11,7 +12,8 @@ export function validate(schema: ZodSchema, source: 'body' | 'query' | 'params' 
     } catch (error) {
       if (error instanceof ZodError) {
         const messages = error.issues.map((e) => `${e.path.join('.')}: ${e.message}`);
-        sendError(res, 400, `Validation failed: ${messages.join(', ')}`, 'VALIDATION_ERROR');
+        logger.warn({ errors: messages }, '[Validate] request validation failed');
+        sendError(res, 400, 'Invalid request data', 'VALIDATION_ERROR');
         return;
       }
       next(error);

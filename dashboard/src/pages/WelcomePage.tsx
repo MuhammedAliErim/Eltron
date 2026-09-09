@@ -32,7 +32,7 @@ export function WelcomePage() {
   const handleSave = async () => {
     try {
       setSaving(true);
-      await updateConfig({ enabled: welcomeEnabled, goodbye_enabled: goodbyeEnabled });
+      await updateConfig({ ...config, enabled: welcomeEnabled, goodbye_enabled: goodbyeEnabled });
       addToast({ type: 'success', message: 'Welcome configuration saved.' });
     } catch {
       addToast({ type: 'error', message: 'Failed to save configuration.' });

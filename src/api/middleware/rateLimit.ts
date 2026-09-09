@@ -39,7 +39,7 @@ export function rateLimit(maxRequests: number, windowMs: number) {
     }
     const store = stores.get(storeKey)!;
 
-    const key = `${req.params.id || 'global'}:${req.ip}`;
+    const key = `${(req.session as any)?.user?.id || 'anonymous'}:${req.ip}`;
     const now = Date.now();
     const entry = store.get(key);
 

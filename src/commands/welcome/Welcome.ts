@@ -94,6 +94,11 @@ export default class WelcomeCommand extends Command {
   ): Promise<void> {
     const config = await repo.getConfig(guildId);
 
+    if (!config) {
+      await interaction.editReply({ content: 'No welcome configuration found. Please set up a channel first.' });
+      return;
+    }
+
     if (!config.welcome_channel_id) {
       await interaction.editReply({
         content: 'Set a welcome channel first with `/welcome channel`.',
@@ -118,6 +123,12 @@ export default class WelcomeCommand extends Command {
     guildId: string
   ): Promise<void> {
     const config = await repo.getConfig(guildId);
+
+    if (!config) {
+      await interaction.editReply({ content: 'No welcome configuration found. Please set up a channel first.' });
+      return;
+    }
+
     const status = getStatusDescription(config);
 
     await interaction.editReply({

@@ -94,6 +94,11 @@ export default class GoodbyeCommand extends Command {
   ): Promise<void> {
     const config = await repo.getConfig(guildId);
 
+    if (!config) {
+      await interaction.editReply({ content: 'No goodbye configuration found. Please set up a channel first.' });
+      return;
+    }
+
     if (!config.goodbye_channel_id) {
       await interaction.editReply({
         content: 'Set a goodbye channel first with `/goodbye channel`.',
@@ -118,6 +123,12 @@ export default class GoodbyeCommand extends Command {
     guildId: string
   ): Promise<void> {
     const config = await repo.getConfig(guildId);
+
+    if (!config) {
+      await interaction.editReply({ content: 'No goodbye configuration found. Please set up a channel first.' });
+      return;
+    }
+
     const status = getStatusDescription(config);
 
     await interaction.editReply({

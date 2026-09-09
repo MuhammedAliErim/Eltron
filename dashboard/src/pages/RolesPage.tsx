@@ -27,7 +27,7 @@ export function RolesPage() {
   const handleSave = async () => {
     try {
       setSaving(true);
-      await updateConfig({ enabled });
+      await updateConfig({ enabled, role_id: config?.role_id || null });
       addToast({ type: 'success', message: 'Auto-role configuration saved.' });
     } catch {
       addToast({ type: 'error', message: 'Failed to save configuration.' });

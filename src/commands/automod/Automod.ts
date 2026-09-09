@@ -208,6 +208,11 @@ export default class AutomodCommand extends Command {
         break;
     }
 
+    if (Object.keys(updates).length === 0) {
+      await interaction.editReply({ content: 'No valid setting was specified. Please check your input.' });
+      return;
+    }
+
     ValidationGuard.validate(automodConfigSchema, updates);
 
     const config = await repo.updateConfig(interaction.guildId!, updates);

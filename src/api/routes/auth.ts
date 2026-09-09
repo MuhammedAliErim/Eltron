@@ -52,6 +52,13 @@ router.get('/callback', rateLimits.auth, async (req: Request, res: Response) => 
 
     logger.info({ hasUser: !!user, hasAccessToken: !!tokenData.access_token, hasRefreshToken: !!tokenData.refresh_token }, '[Auth] discord exchange ok, writing session');
 
+    await new Promise<void>((resolve, reject) => {
+      req.session.regenerate((err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+
     req.session.user = user;
     req.session.accessToken = tokenData.access_token;
     req.session.refreshToken = tokenData.refresh_token;
@@ -63,7 +70,7 @@ router.get('/callback', rateLimits.auth, async (req: Request, res: Response) => 
         res.redirect(`${env.DASHBOARD_URL}?error=session_save_failed`);
         return;
       }
-      logger.info({ sessionId: req.sessionID, redirectUrl: `${env.DASHBOARD_URL}/dashboard` }, '[Auth] session saved, redirecting');
+      logger.info({ redirectUrl: `${env.DASHBOARD_URL}/dashboard` }, '[Auth] session saved, redirecting');
       res.redirect(`${env.DASHBOARD_URL}/dashboard`);
     });
   } catch (error) {

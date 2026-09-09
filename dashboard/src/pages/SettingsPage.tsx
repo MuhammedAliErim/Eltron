@@ -113,7 +113,20 @@ export function SettingsPage() {
           <p className="text-sm text-eltron-muted">Are you sure you want to reset all settings to defaults? This action cannot be undone.</p>
           <div className="flex gap-2 justify-end">
             <Button variant="ghost" onClick={() => setConfirmReset(false)}>Cancel</Button>
-            <Button variant="danger" onClick={() => { setConfirmReset(false); addToast({ type: 'success', message: 'Settings reset.' }); }}>Reset</Button>
+            <Button variant="danger" onClick={async () => {
+              try {
+                setSaving(true);
+                await updateSettings({ language: 'en', timezone: 'UTC' });
+                setLanguage('en');
+                setTimezone('UTC');
+                setConfirmReset(false);
+                addToast({ type: 'success', message: 'Settings reset to defaults.' });
+              } catch {
+                addToast({ type: 'error', message: 'Failed to reset settings.' });
+              } finally {
+                setSaving(false);
+              }
+            }}>Reset</Button>
           </div>
         </div>
       </Modal>

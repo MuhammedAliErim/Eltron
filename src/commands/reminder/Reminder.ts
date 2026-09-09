@@ -46,7 +46,7 @@ export default class ReminderCommand extends Command {
     );
 
   category = 'Utility';
-  cooldown = 3000;
+  cooldown = 3;
 
   async execute({ interaction }: CommandExecuteOptions): Promise<void> {
     if (!interaction.guildId) throw new GuildOnlyError();

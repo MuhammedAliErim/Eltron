@@ -1,5 +1,6 @@
 import {
   SlashCommandBuilder,
+  PermissionFlagsBits,
   MessageFlags,
   type ChatInputCommandInteraction,
   type GuildMember,
@@ -146,6 +147,11 @@ export default class TicketCommand extends Command {
   }
 
   private async handleClose(interaction: ChatInputCommandInteraction): Promise<void> {
+    if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)) {
+      await interaction.editReply({ content: 'You need Manage Server permission to perform this action.' });
+      return;
+    }
+
     const ticketId = interaction.options.getInteger('ticket_id');
 
     let ticket;
@@ -204,6 +210,11 @@ export default class TicketCommand extends Command {
   }
 
   private async handleClaim(interaction: ChatInputCommandInteraction): Promise<void> {
+    if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)) {
+      await interaction.editReply({ content: 'You need Manage Server permission to perform this action.' });
+      return;
+    }
+
     const ticketId = interaction.options.getInteger('ticket_id');
 
     let ticket;
@@ -239,6 +250,11 @@ export default class TicketCommand extends Command {
   }
 
   private async handleUnclaim(interaction: ChatInputCommandInteraction): Promise<void> {
+    if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)) {
+      await interaction.editReply({ content: 'You need Manage Server permission to perform this action.' });
+      return;
+    }
+
     const ticketId = interaction.options.getInteger('ticket_id');
 
     let ticket;

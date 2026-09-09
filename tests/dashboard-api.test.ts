@@ -142,7 +142,7 @@ describe('API Client', () => {
     } catch (err) {
       expect(err).toBeInstanceOf(ApiRequestError);
       expect((err as InstanceType<typeof ApiRequestError>).status).toBe(401);
-      expect((err as InstanceType<typeof ApiRequestError>).code).toBe('NOT_AUTHENTICATED');
+      expect((err as InstanceType<typeof ApiRequestError>).code).toBe('UNAUTHORIZED');
     }
   });
 

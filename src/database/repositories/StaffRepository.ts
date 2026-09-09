@@ -4,7 +4,7 @@ import { logError } from '../../utils/logger';
 import { DatabaseQueryError } from '../../utils/errors';
 
 export class StaffRepository extends BaseRepository {
-  async addStaff(data: StaffMemberCreate): Promise<StaffMemberRow> {
+  async addStaff(data: StaffMemberCreate): Promise<StaffMemberRow | null> {
     try {
       const { data: created, error } = await this.supabase
         .from('staff_members')
@@ -19,7 +19,7 @@ export class StaffRepository extends BaseRepository {
 
       if (error) {
         if (error.code === '23505') {
-          return null as unknown as StaffMemberRow;
+          return null;
         }
         logError(`Error adding staff for guild ${data.guild_id}`, error);
         throw new DatabaseQueryError(`Failed to add staff: ${error.message}`);

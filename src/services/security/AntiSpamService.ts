@@ -146,5 +146,11 @@ export const resetUserState = (guildId: string, userId: string): void => {
 };
 
 export const cleanupSpamCache = (): void => {
-  spamStateCache.clear();
+  const now = Date.now();
+  for (const [key, state] of spamStateCache.entries()) {
+    const lastTimestamp = state.timestamps[state.timestamps.length - 1] ?? 0;
+    if (now - lastTimestamp > 60000) {
+      spamStateCache.delete(key);
+    }
+  }
 };

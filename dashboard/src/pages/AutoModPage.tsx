@@ -27,7 +27,7 @@ export function AutoModPage() {
   const handleToggle = async (enabled: boolean) => {
     try {
       setSaving(true);
-      await updateConfig({ enabled });
+      await updateConfig({ ...config, enabled });
       addToast({ type: 'success', message: `AutoMod ${enabled ? 'enabled' : 'disabled'}.` });
     } catch {
       addToast({ type: 'error', message: 'Failed to update AutoMod config.' });
