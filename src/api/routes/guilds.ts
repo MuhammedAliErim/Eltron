@@ -16,8 +16,6 @@ router.get('/', requireAuth, rateLimits.normalGet, async (req: Request, res: Res
     let botGuildIdSet: Set<string> | null = null;
 
     try {
-      const { GuildRepository } = await import('../../database/repositories/GuildRepository');
-      const guildRepository = new GuildRepository();
       const botGuilds = await guildRepository.getAllGuildIds();
       botGuildIdSet = new Set(botGuilds);
     } catch {
@@ -26,10 +24,16 @@ router.get('/', requireAuth, rateLimits.normalGet, async (req: Request, res: Res
 
     const accessibleGuilds = userGuilds
       .filter((g) => {
-        const permissionBigInt = BigInt(g.permissions);
-        const manageGuildBit = BigInt('0x0000000000000020');
-        const hasManageGuild = (permissionBigInt & manageGuildBit) !== 0n;
-        if (!hasManageGuild) return false;
+        try {
+          const permissionBigInt = BigInt(g.permissions);
+          const manageGuildBit = BigInt('0x0000000000000020');
+          const hasManageGuild = (permissionBigInt & manageGuildBit) !== 0n;
+          return hasManageGuild;
+        } catch {
+          return false;
+        }
+      })
+      .filter((g) => {
         if (botGuildIdSet && botGuildIdSet.size > 0) {
           return botGuildIdSet.has(g.id);
         }

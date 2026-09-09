@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { GuildProvider } from './contexts/GuildContext';
-import { ToastProvider } from './contexts/ToastContext';
+import { ToastProvider, useToast } from './contexts/ToastContext';
+import { ToastContainer } from './components/ui/ToastContainer';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { Layout } from './components/layout/Layout';
 import { LoginPage } from './components/auth/LoginPage';
@@ -51,6 +52,11 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function ToastRenderer() {
+  const { toasts, removeToast } = useToast();
+  return <ToastContainer toasts={toasts} onDismiss={removeToast} />;
+}
+
 function AppRoutes() {
   return (
     <Routes>
@@ -84,6 +90,7 @@ export default function App() {
         <AuthProvider>
           <GuildProvider>
             <ToastProvider>
+              <ToastRenderer />
               <AppRoutes />
             </ToastProvider>
           </GuildProvider>

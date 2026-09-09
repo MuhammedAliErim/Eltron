@@ -20,7 +20,9 @@ export function requireAuth(req: Request, res: Response, next: NextFunction): vo
       })
       .catch((error) => {
         logError('Token refresh failed', error);
-        req.session.destroy(() => {});
+        req.session.destroy((destroyErr) => {
+          if (destroyErr) logError('Session destroy failed after refresh error', destroyErr);
+        });
         sendError(res, 401, 'Token refresh failed', 'TOKEN_REFRESH_FAILED');
       });
     return;

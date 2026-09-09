@@ -16,7 +16,7 @@ const sizeStyles = {
 };
 
 export function Avatar({ userId, src, alt, size = 'md', className }: AvatarProps) {
-  const imageUrl = src || (userId ? getAvatarUrl(userId, null) : null);
+  const imageUrl = src && src.startsWith('http') ? src : (userId ? getAvatarUrl(userId, src || null) : null);
   const initials = alt.charAt(0).toUpperCase();
 
   return (

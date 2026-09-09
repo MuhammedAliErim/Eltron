@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { api } from '../api/client';
+import { useAuth } from './AuthContext';
 import type { Guild } from '../lib/types';
 
 interface GuildContextType {
@@ -14,6 +15,7 @@ interface GuildContextType {
 const GuildContext = createContext<GuildContextType | null>(null);
 
 export function GuildProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
   const [guilds, setGuilds] = useState<Guild[]>([]);
   const [activeGuild, setActiveGuild] = useState<Guild | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,8 +42,14 @@ export function GuildProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    fetchGuilds();
-  }, [fetchGuilds]);
+    if (user) {
+      fetchGuilds();
+    } else {
+      setGuilds([]);
+      setActiveGuild(null);
+      setLoading(false);
+    }
+  }, [user, fetchGuilds]);
 
   const handleSetActiveGuild = (guild: Guild | null) => {
     setActiveGuild(guild);

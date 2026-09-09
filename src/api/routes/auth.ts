@@ -5,6 +5,7 @@ import { isAuthenticated, isTokenValid } from '../utils/session';
 import { rateLimits } from '../middleware/rateLimit';
 import { env } from '../../config/env';
 import { logError, logger } from '../../utils/logger';
+import { sendError } from '../utils/response';
 
 const router = Router();
 
@@ -12,7 +13,7 @@ const REDIRECT_URI = `${env.DASHBOARD_URL}/api/auth/callback`;
 
 router.get('/login', rateLimits.auth, (_req: Request, res: Response) => {
   const state = crypto.randomBytes(32).toString('hex');
-  (_req as any).session.oauthState = state;
+  _req.session.oauthState = state;
 
   const params = new URLSearchParams({
     client_id: env.DISCORD_CLIENT_ID,
@@ -22,7 +23,7 @@ router.get('/login', rateLimits.auth, (_req: Request, res: Response) => {
     state,
   });
 
-  logger.info({ hasSession: !!(_req as any).session, hasState: !!state }, '[Auth] login initiated');
+  logger.info({ hasSession: !!_req.session, hasState: !!state }, '[Auth] login initiated');
   res.redirect(`https://discord.com/api/oauth2/authorize?${params.toString()}`);
 });
 
@@ -30,20 +31,20 @@ router.get('/callback', rateLimits.auth, async (req: Request, res: Response) => 
   const code = req.query.code as string;
   const state = req.query.state as string;
 
-  logger.info({ hasCode: !!code, hasState: !!state, hasSession: !!req.session, hasOAuthState: !!(req as any).session?.oauthState }, '[Auth] callback received');
+  logger.info({ hasCode: !!code, hasState: !!state, hasSession: !!req.session, hasOAuthState: !!req.session?.oauthState }, '[Auth] callback received');
 
   if (!code) {
     res.redirect(`${env.DASHBOARD_URL}?error=no_code`);
     return;
   }
 
-  const expectedState = (req as any).session?.oauthState;
-  if (expectedState && state !== expectedState) {
-    logger.warn('[Auth] callback state mismatch');
+  const expectedState = req.session?.oauthState;
+  if (!expectedState || state !== expectedState) {
+    logger.warn('[Auth] callback state mismatch or missing');
     res.redirect(`${env.DASHBOARD_URL}?error=invalid_state`);
     return;
   }
-  delete (req as any).session?.oauthState;
+  delete req.session?.oauthState;
 
   try {
     const tokenData = await exchangeCode(code, REDIRECT_URI);
@@ -76,7 +77,7 @@ router.get('/me', rateLimits.auth, async (req: Request, res: Response) => {
   logger.info({ sessionId: req.sessionID, authenticated: authed, hasSession: !!req.session, hasUser: !!req.session?.user, hasTokenExpiry: !!req.session?.tokenExpiry }, '[Auth] /me called');
 
   if (!authed) {
-    res.status(401).json({ error: 'Not authenticated', code: 'NOT_AUTHENTICATED' });
+    sendError(res, 401, 'Not authenticated', 'NOT_AUTHENTICATED');
     return;
   }
 
@@ -88,8 +89,10 @@ router.get('/me', rateLimits.auth, async (req: Request, res: Response) => {
       req.session.tokenExpiry = Date.now() + tokenData.expires_in * 1000;
     } catch (error) {
       logError('Token refresh failed in /me', error);
-      req.session.destroy(() => {});
-      res.status(401).json({ error: 'Token refresh failed', code: 'TOKEN_REFRESH_FAILED' });
+      req.session.destroy((destroyErr) => {
+        if (destroyErr) logError('Session destroy failed after refresh error', destroyErr);
+      });
+      sendError(res, 401, 'Token refresh failed', 'TOKEN_REFRESH_FAILED');
       return;
     }
   }

@@ -5,6 +5,7 @@ import { rateLimits } from '../middleware/rateLimit';
 import { LevelRepository } from '../../database/repositories/LevelRepository';
 import { parsePagination, sendList, sendData, sendError } from '../utils/response';
 import { logError } from '../../utils/logger';
+import { getSupabaseAdmin } from '../../database/connection';
 
 const router = Router();
 const levelRepo = new LevelRepository();
@@ -19,11 +20,18 @@ router.get(
     const pagination = parsePagination(req.query as Record<string, unknown>);
 
     try {
-      const leaderboard = await levelRepo.getLeaderboard(guildId, pagination.pageSize);
+      const supabase = getSupabaseAdmin();
+      const { count } = await supabase
+        .from('user_xp')
+        .select('*', { count: 'exact', head: true })
+        .eq('guild_id', guildId);
+
+      const total = count || 0;
       const start = (pagination.page - 1) * pagination.pageSize;
+      const leaderboard = await levelRepo.getLeaderboard(guildId, start + pagination.pageSize);
       const paginated = leaderboard.slice(start, start + pagination.pageSize);
 
-      sendList(res, paginated, leaderboard.length, pagination);
+      sendList(res, paginated, total, pagination);
     } catch (error) {
       logError(`Failed to fetch leaderboard for guild ${guildId}`, error);
       sendError(res, 500, 'Failed to fetch leaderboard', 'LEADERBOARD_FETCH_FAILED');

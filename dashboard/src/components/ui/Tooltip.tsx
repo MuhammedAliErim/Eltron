@@ -1,4 +1,4 @@
-import { useState, useRef, ReactNode } from 'react';
+import { useState, useRef, useEffect, ReactNode } from 'react';
 import { classNames } from '../../lib/utils';
 
 interface TooltipProps {
@@ -11,6 +11,12 @@ interface TooltipProps {
 export function Tooltip({ children, content, side = 'right', delay = 300 }: TooltipProps) {
   const [visible, setVisible] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   const show = () => {
     timeoutRef.current = setTimeout(() => setVisible(true), delay);

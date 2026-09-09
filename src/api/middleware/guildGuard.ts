@@ -45,7 +45,9 @@ async function ensureValidToken(req: Request, res: Response): Promise<boolean> {
       logger.info('[GuildGuard] ensureValidToken: token refreshed successfully');
     } catch (error) {
       logError('[GuildGuard] ensureValidToken: token refresh failed', error);
-      req.session.destroy(() => {});
+      req.session.destroy((destroyErr) => {
+        if (destroyErr) logError('[GuildGuard] session.destroy failed after refresh error', destroyErr);
+      });
       sendError(res, 401, 'Token refresh failed', 'TOKEN_REFRESH_FAILED');
       return false;
     }
@@ -55,7 +57,7 @@ async function ensureValidToken(req: Request, res: Response): Promise<boolean> {
 }
 
 export async function guildGuard(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const guildId = req.params.guildId || req.params.id;
+  const guildId = req.params.id;
   logger.info({ guildId, hasSession: !!req.session, hasUser: !!req.session?.user, hasAccessToken: !!req.session?.accessToken }, '[GuildGuard] called');
 
   if (!guildId) {
@@ -69,11 +71,6 @@ export async function guildGuard(req: Request, res: Response, next: NextFunction
 
   try {
     const accessToken = req.session.accessToken!;
-    if (!accessToken) {
-      logger.error({ guildId, hasAccessToken: false }, '[GuildGuard] accessToken is null/undefined before getUserGuilds call');
-      sendError(res, 401, 'No access token in session', 'NO_ACCESS_TOKEN');
-      return;
-    }
     const userGuilds = await getUserGuilds(accessToken);
     const targetGuild = userGuilds.find((g) => g.id === guildId);
 

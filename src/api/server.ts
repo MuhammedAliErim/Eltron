@@ -102,7 +102,9 @@ if (fs.existsSync(dashboardDistPath)) {
       next();
       return;
     }
-    res.sendFile(spaIndex);
+    res.sendFile(spaIndex, (err) => {
+      if (err) next();
+    });
   });
 }
 

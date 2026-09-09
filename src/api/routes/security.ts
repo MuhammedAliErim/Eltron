@@ -81,8 +81,7 @@ router.get(
         channelWarning: channelWarning || { guild_id: guildId, enabled: false },
       });
     } catch (error) {
-      const errObj = error as Record<string, unknown>;
-      logError(`[DEBUG security/config] guild=${guildId} code=${errObj.code} message=${errObj.message} details=${errObj.details} hint=${errObj.hint}`, error);
+      logError(`Failed to fetch security config for guild ${guildId}`, error);
       sendError(res, 500, 'Failed to fetch security config', 'SECURITY_CONFIG_FETCH_FAILED');
     }
   }

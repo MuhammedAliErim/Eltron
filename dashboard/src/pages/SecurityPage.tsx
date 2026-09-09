@@ -22,7 +22,7 @@ const TABS = [
 export function SecurityPage() {
   const { activeGuild } = useGuild();
   const guildId = activeGuild?.id ?? null;
-  const { config, quarantineLogs, loading, error, fetchConfig, updateAntiRaid, fetchQuarantineLogs, refetch } = useSecurity(guildId);
+  const { config, quarantineLogs, loading, error, fetchConfig, updateAntiRaid, updateQuarantine, updateVerification, updateChannelWarning, fetchQuarantineLogs, refetch } = useSecurity(guildId);
   const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState('antiraid');
   const [saving, setSaving] = useState(false);
@@ -101,6 +101,11 @@ export function SecurityPage() {
                 <div><span className="text-eltron-subtle">Default duration:</span> <span className="text-eltron-text ml-2">{config.quarantine.default_duration}s</span></div>
                 <div><span className="text-eltron-subtle">Auto release:</span> <Badge variant={config.quarantine.auto_release ? 'success' : 'default'} size="sm" className="ml-2">{config.quarantine.auto_release ? 'Yes' : 'No'}</Badge></div>
               </div>
+              <div className="mt-4">
+                <Button variant="primary" size="sm" onClick={() => handleSave(updateQuarantine, { enabled: !config.quarantine.enabled })} disabled={saving}>
+                  {config.quarantine.enabled ? 'Disable Quarantine' : 'Enable Quarantine'}
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
@@ -128,6 +133,11 @@ export function SecurityPage() {
               <div><span className="text-eltron-subtle">Method:</span> <Badge variant="info" size="sm" className="ml-2">{config.verification.method}</Badge></div>
               <div><span className="text-eltron-subtle">Timeout:</span> <span className="text-eltron-text ml-2">{config.verification.timeout_minutes} min</span></div>
             </div>
+            <div className="mt-4">
+              <Button variant="primary" size="sm" onClick={() => handleSave(updateVerification, { enabled: !config.verification.enabled })} disabled={saving}>
+                {config.verification.enabled ? 'Disable Verification' : 'Enable Verification'}
+              </Button>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -145,6 +155,11 @@ export function SecurityPage() {
               <div><span className="text-eltron-subtle">Max slowmode:</span> <span className="text-eltron-text ml-2">{config.channelWarning.max_slowmode}s</span></div>
               <div><span className="text-eltron-subtle">Slowmode increment:</span> <span className="text-eltron-text ml-2">{config.channelWarning.slowmode_increment}s</span></div>
               <div><span className="text-eltron-subtle">Alert threshold:</span> <span className="text-eltron-text ml-2">{config.channelWarning.alert_threshold}</span></div>
+            </div>
+            <div className="mt-4">
+              <Button variant="primary" size="sm" onClick={() => handleSave(updateChannelWarning, { enabled: !config.channelWarning.enabled })} disabled={saving}>
+                {config.channelWarning.enabled ? 'Disable Channel Warning' : 'Enable Channel Warning'}
+              </Button>
             </div>
           </CardContent>
         </Card>
