@@ -20,12 +20,20 @@ import Poll from './poll/Poll';
 import Quarantine from './quarantine/Quarantine';
 import Reminder from './reminder/Reminder';
 import AutoRole from './role/AutoRole';
+import ReactionRole from './role/ReactionRole';
 import Role from './role/Role';
 import Staff from './staff/Staff';
 import Ticket from './ticket/Ticket';
 import BotInfo from './utility/BotInfo';
+import Embed from './utility/Embed';
 import Help from './utility/Help';
 import Ping from './utility/Ping';
+import ServerInfo from './utility/ServerInfo';
+import Snipe from './utility/Snipe';
+import Stats from './utility/Stats';
+import Task from './utility/Task';
+import Uptime from './utility/Uptime';
+import UserInfo from './utility/UserInfo';
 import Verification from './verification/Verification';
 import Verify from './verification/Verify';
 import Welcome from './welcome/Welcome';
@@ -52,12 +60,20 @@ export const commands: Command[] = [
   new Quarantine(),
   new Reminder(),
   new AutoRole(),
+  new ReactionRole(),
   new Role(),
   new Staff(),
   new Ticket(),
   new BotInfo(),
+  new Embed(),
   new Help(),
   new Ping(),
+  new ServerInfo(),
+  new Snipe(),
+  new Stats(),
+  new Task(),
+  new Uptime(),
+  new UserInfo(),
   new Verification(),
   new Verify(),
   new Welcome(),

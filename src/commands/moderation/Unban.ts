@@ -2,6 +2,7 @@ import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
 import { Command } from '../../structures/Command';
 import type { CommandExecuteOptions } from '../../structures/Command';
 import { ModerationService } from '../../services/moderation/ModerationService';
+import { AuditLogService } from '../../services/audit-log/AuditLogService';
 import { ValidationGuard } from '../../middleware/ValidationGuard';
 import { snowflakeSchema } from '../../utils/validation';
 
@@ -31,6 +32,8 @@ export default class UnbanCommand extends Command {
 
     const service = new ModerationService();
     const modCase = await service.unban(interaction, userId, reason);
+
+    AuditLogService.logModeration(interaction.guildId!, 'unban', interaction.user.id, userId, 'Unbanned');
 
     const embed = ModerationService.buildModerationEmbed(
       modCase,

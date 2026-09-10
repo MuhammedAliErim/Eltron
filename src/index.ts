@@ -8,6 +8,7 @@ import { restoreGiveawayTimers } from './services/giveaway/GiveawayService';
 import { restoreEventTimers } from './services/event/EventService';
 import { restorePollTimers } from './services/poll/PollService';
 import { restoreReminderTimers } from './services/reminder/ReminderService';
+import { restoreScheduledTasks, setTaskClient } from './services/task/ScheduledTaskService';
 import { startApiServer, getApiServer } from './api/server';
 import type { Server } from 'http';
 
@@ -32,6 +33,9 @@ const main = async (): Promise<void> => {
     await restorePollTimers();
 
     await restoreReminderTimers(client);
+
+    setTaskClient(client);
+    await restoreScheduledTasks();
 
     apiServer = startApiServer();
 

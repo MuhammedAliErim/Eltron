@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useGuild } from '../../contexts/GuildContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { Icon } from '../ui/Icon';
 import { Avatar } from '../ui/Avatar';
 import { Breadcrumb } from '../ui/Breadcrumb';
@@ -15,6 +16,7 @@ interface HeaderProps {
 export function Header({ onMenuToggle }: HeaderProps) {
   const { activeGuild } = useGuild();
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const [search, setSearch] = useState('');
 
@@ -64,6 +66,15 @@ export function Header({ onMenuToggle }: HeaderProps) {
         <div className="hidden md:block w-48">
           <SearchInput value={search} onChange={setSearch} placeholder="Search..." />
         </div>
+
+        <button
+          onClick={toggleTheme}
+          className="btn-icon"
+          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          <Icon name={theme === 'dark' ? 'Star' : 'Info'} size={18} />
+        </button>
 
         {user && (
           <div className="flex items-center gap-2 pl-2 border-l border-eltron-border">

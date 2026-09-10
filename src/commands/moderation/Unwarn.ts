@@ -2,6 +2,7 @@ import { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } from 'discord.
 import { Command } from '../../structures/Command';
 import type { CommandExecuteOptions } from '../../structures/Command';
 import { ModerationService } from '../../services/moderation/ModerationService';
+import { AuditLogService } from '../../services/audit-log/AuditLogService';
 import { ValidationGuard } from '../../middleware/ValidationGuard';
 import { z } from 'zod';
 
@@ -40,6 +41,8 @@ export default class UnwarnCommand extends Command {
       });
       return;
     }
+
+    AuditLogService.logModeration(interaction.guildId!, 'unwarn', interaction.user.id, revoked.user_id, 'Warning removed');
 
     const embed = ModerationService.buildModerationEmbed(
       revoked,

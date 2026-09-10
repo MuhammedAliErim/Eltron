@@ -3,6 +3,7 @@ import { Command } from '../../structures/Command';
 import type { CommandExecuteOptions } from '../../structures/Command';
 import { ModerationService } from '../../services/moderation/ModerationService';
 import { ModerationHierarchyService } from '../../services/moderation/ModerationHierarchyService';
+import { AuditLogService } from '../../services/audit-log/AuditLogService';
 
 export default class BanCommand extends Command {
   data = new SlashCommandBuilder()
@@ -35,6 +36,8 @@ export default class BanCommand extends Command {
 
     const service = new ModerationService();
     const modCase = await service.ban(interaction, targetMember, reason);
+
+    AuditLogService.logModeration(interaction.guildId!, 'ban', interaction.user.id, targetUser.id, reason);
 
     const embed = ModerationService.buildModerationEmbed(
       modCase,

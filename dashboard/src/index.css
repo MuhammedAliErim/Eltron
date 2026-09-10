@@ -106,3 +106,39 @@
   from { opacity: 0; transform: translateX(-8px); }
   to { opacity: 1; transform: translateX(0); }
 }
+
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --bg-card: #ffffff;
+  --bg-hover: #f1f3f5;
+  --border-primary: #dee2e6;
+  --border-secondary: #e9ecef;
+  --text-primary: #212529;
+  --text-secondary: #495057;
+  --text-muted: #868e96;
+  --accent-primary: #5865F2;
+  --accent-hover: #4752c4;
+  --success: #2ecc71;
+  --warning: #f39c12;
+  --danger: #e74c3c;
+  --info: #3498db;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+[data-theme="light"] body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .bg-eltron-bg { background-color: var(--bg-primary); }
+[data-theme="light"] .bg-eltron-surface { background-color: var(--bg-secondary); }
+[data-theme="light"] .bg-eltron-card { background-color: var(--bg-card); }
+[data-theme="light"] .bg-eltron-elevated { background-color: var(--bg-tertiary); }
+[data-theme="light"] .text-eltron-text { color: var(--text-primary); }
+[data-theme="light"] .text-eltron-muted { color: var(--text-secondary); }
+[data-theme="light"] .text-eltron-subtle { color: var(--text-muted); }
+[data-theme="light"] .border-eltron-border { border-color: var(--border-primary); }

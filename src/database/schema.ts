@@ -804,3 +804,40 @@ export interface AnalyticsSummary {
   reminders_created: number;
   xp_awarded: number;
 }
+
+export interface ReactionRoleRow {
+  id: string;
+  guild_id: string;
+  channel_id: string;
+  message_id: string;
+  title: string;
+  description: string | null;
+  color: string;
+  emoji: string;
+  role_id: string;
+  max_uses: number;
+  current_uses: number;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ReactionRoleCreate {
+  guild_id: string;
+  channel_id: string;
+  message_id: string;
+  title: string;
+  description?: string;
+  color?: string;
+  emoji: string;
+  role_id: string;
+  created_by: string;
+}
+
+export interface ReactionRoleUpdate {
+  title?: string;
+  description?: string;
+  color?: string;
+  max_uses?: number;
+  current_uses?: number;
+}

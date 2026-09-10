@@ -11,7 +11,9 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard', href: '/dashboard', icon: 'Dashboard', section: 'OVERVIEW' },
+  { label: 'Server Overview', href: '/overview', icon: 'Members', section: 'OVERVIEW' },
   { label: 'Analytics', href: '/analytics', icon: 'Analytics', section: 'OVERVIEW' },
+  { label: 'Commands', href: '/commands', icon: 'Bot', section: 'OVERVIEW' },
   { label: 'Moderation', href: '/moderation', icon: 'Moderation', section: 'MANAGEMENT' },
   { label: 'AutoMod', href: '/automod', icon: 'Bot', section: 'MANAGEMENT' },
   { label: 'Security', href: '/security', icon: 'Security', section: 'MANAGEMENT' },
@@ -40,6 +42,8 @@ export const SECTION_LABELS: Record<string, string> = {
 
 export const BREADCRUMB_MAP: Record<string, string> = {
   dashboard: 'Dashboard',
+  overview: 'Server Overview',
+  commands: 'Commands',
   analytics: 'Analytics',
   moderation: 'Moderation',
   automod: 'AutoMod',
@@ -55,7 +59,6 @@ export const BREADCRUMB_MAP: Record<string, string> = {
   polls: 'Polls',
   reminders: 'Reminders',
   settings: 'Settings',
-  overview: 'Overview',
   daily: 'Daily',
   weekly: 'Weekly',
   monthly: 'Monthly',

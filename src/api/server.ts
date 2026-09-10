@@ -23,7 +23,10 @@ import giveawayRoutes from './routes/giveaways';
 import eventRoutes from './routes/events';
 import pollRoutes from './routes/polls';
 import reminderRoutes from './routes/reminders';
+import taskRoutes from './routes/tasks';
 import settingsRoutes from './routes/settings';
+import reactionRolesRoutes from './routes/reactionRoles';
+import auditLogsRoutes from './routes/auditLogs';
 
 const app = express();
 
@@ -102,7 +105,10 @@ app.use('/api/guilds', giveawayRoutes);
 app.use('/api/guilds', eventRoutes);
 app.use('/api/guilds', pollRoutes);
 app.use('/api/guilds', reminderRoutes);
+app.use('/api/guilds', taskRoutes);
 app.use('/api/guilds', settingsRoutes);
+app.use('/api/guilds', reactionRolesRoutes);
+app.use('/api/guilds/:id/audit-logs', auditLogsRoutes);
 
 const dashboardDistPath = fs.existsSync(path.join(__dirname, 'dashboard'))
   ? path.join(__dirname, 'dashboard')

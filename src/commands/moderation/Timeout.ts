@@ -3,6 +3,7 @@ import { Command } from '../../structures/Command';
 import type { CommandExecuteOptions } from '../../structures/Command';
 import { ModerationService } from '../../services/moderation/ModerationService';
 import { ModerationHierarchyService } from '../../services/moderation/ModerationHierarchyService';
+import { AuditLogService } from '../../services/audit-log/AuditLogService';
 import { parseDuration } from '../../utils/duration';
 import { ValidationError } from '../../utils/errors';
 
@@ -54,6 +55,8 @@ export default class TimeoutCommand extends Command {
       durationResult.milliseconds!,
       reason
     );
+
+    AuditLogService.logModeration(interaction.guildId!, 'timeout', interaction.user.id, targetUser.id, reason);
 
     const embed = ModerationService.buildModerationEmbed(
       modCase,

@@ -1,12 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { GuildProvider } from './contexts/GuildContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { ToastProvider, useToast } from './contexts/ToastContext';
 import { ToastContainer } from './components/ui/ToastContainer';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { Layout } from './components/layout/Layout';
 import { LoginPage } from './components/auth/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { ServerOverviewPage } from './pages/ServerOverviewPage';
+import { CommandsPage } from './pages/CommandsPage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { ModerationPage } from './pages/ModerationPage';
 import { AutoModPage } from './pages/AutoModPage';
@@ -62,6 +65,8 @@ function AppRoutes() {
     <Routes>
       <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
       <Route path="/dashboard" element={<ProtectedRoute><ErrorBoundary><DashboardPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/overview" element={<ProtectedRoute><ErrorBoundary><ServerOverviewPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/commands" element={<ProtectedRoute><ErrorBoundary><CommandsPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/analytics" element={<ProtectedRoute><ErrorBoundary><AnalyticsPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/moderation" element={<ProtectedRoute><ErrorBoundary><ModerationPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/automod" element={<ProtectedRoute><ErrorBoundary><AutoModPage /></ErrorBoundary></ProtectedRoute>} />
@@ -89,10 +94,12 @@ export default function App() {
       <BrowserRouter>
         <AuthProvider>
           <GuildProvider>
-            <ToastProvider>
-              <ToastRenderer />
-              <AppRoutes />
-            </ToastProvider>
+            <ThemeProvider>
+              <ToastProvider>
+                <ToastRenderer />
+                <AppRoutes />
+              </ToastProvider>
+            </ThemeProvider>
           </GuildProvider>
         </AuthProvider>
       </BrowserRouter>
