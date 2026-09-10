@@ -20,10 +20,14 @@ import { StaffPage } from './pages/StaffPage';
 import { WelcomePage } from './pages/WelcomePage';
 import { RolesPage } from './pages/RolesPage';
 import { LevelingPage } from './pages/LevelingPage';
+import { LevelingConfigPage } from './pages/LevelingConfigPage';
 import { GiveawaysPage } from './pages/GiveawaysPage';
 import { EventsPage } from './pages/EventsPage';
 import { PollsPage } from './pages/PollsPage';
 import { RemindersPage } from './pages/RemindersPage';
+import { AuditLogsPage } from './pages/AuditLogsPage';
+import { AutoResponsesPage } from './pages/AutoResponsesPage';
+import { TagsPage } from './pages/TagsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { Icon } from './components/ui/Icon';
@@ -77,10 +81,14 @@ function AppRoutes() {
       <Route path="/welcome" element={<ProtectedRoute><ErrorBoundary><WelcomePage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/roles" element={<ProtectedRoute><ErrorBoundary><RolesPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/leveling" element={<ProtectedRoute><ErrorBoundary><LevelingPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/leveling-config" element={<ProtectedRoute><ErrorBoundary><LevelingConfigPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/giveaways" element={<ProtectedRoute><ErrorBoundary><GiveawaysPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/events" element={<ProtectedRoute><ErrorBoundary><EventsPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/polls" element={<ProtectedRoute><ErrorBoundary><PollsPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/reminders" element={<ProtectedRoute><ErrorBoundary><RemindersPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/audit-logs" element={<ProtectedRoute><ErrorBoundary><AuditLogsPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/auto-responses" element={<ProtectedRoute><ErrorBoundary><AutoResponsesPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/tags" element={<ProtectedRoute><ErrorBoundary><TagsPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><ErrorBoundary><SettingsPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<NotFoundPage />} />

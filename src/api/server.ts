@@ -19,6 +19,7 @@ import staffRoutes from './routes/staff';
 import welcomeRoutes from './routes/welcome';
 import roleRoutes from './routes/roles';
 import levelingRoutes from './routes/leveling';
+import levelConfigRoutes from './routes/levelConfig';
 import giveawayRoutes from './routes/giveaways';
 import eventRoutes from './routes/events';
 import pollRoutes from './routes/polls';
@@ -26,7 +27,9 @@ import reminderRoutes from './routes/reminders';
 import taskRoutes from './routes/tasks';
 import settingsRoutes from './routes/settings';
 import reactionRolesRoutes from './routes/reactionRoles';
+import autoResponsesRoutes from './routes/autoResponses';
 import auditLogsRoutes from './routes/auditLogs';
+import tagRoutes from './routes/tags';
 
 const app = express();
 
@@ -101,6 +104,7 @@ app.use('/api/guilds', staffRoutes);
 app.use('/api/guilds', welcomeRoutes);
 app.use('/api/guilds', roleRoutes);
 app.use('/api/guilds', levelingRoutes);
+app.use('/api/guilds', levelConfigRoutes);
 app.use('/api/guilds', giveawayRoutes);
 app.use('/api/guilds', eventRoutes);
 app.use('/api/guilds', pollRoutes);
@@ -108,6 +112,8 @@ app.use('/api/guilds', reminderRoutes);
 app.use('/api/guilds', taskRoutes);
 app.use('/api/guilds', settingsRoutes);
 app.use('/api/guilds', reactionRolesRoutes);
+app.use('/api/guilds', autoResponsesRoutes);
+app.use('/api/guilds', tagRoutes);
 app.use('/api/guilds/:id/audit-logs', auditLogsRoutes);
 
 const dashboardDistPath = fs.existsSync(path.join(__dirname, 'dashboard'))

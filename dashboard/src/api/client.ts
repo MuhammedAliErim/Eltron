@@ -151,6 +151,24 @@ export const api = {
       request<ApiListResponse<unknown>>(`/guilds/${guildId}/leveling/leaderboard${buildQuery(params || {})}`),
     getUser: (guildId: string, userId: string) =>
       request<ApiResponse<unknown>>(`/guilds/${guildId}/leveling/user/${userId}`),
+    getConfig: (guildId: string) =>
+      request<ApiResponse<unknown>>(`/guilds/${guildId}/leveling/config`),
+    updateConfig: (guildId: string, body: Record<string, unknown>) =>
+      request<ApiResponse<unknown>>(`/guilds/${guildId}/leveling/config`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      }),
+    getRewards: (guildId: string) =>
+      request<ApiResponse<unknown[]>>(`/guilds/${guildId}/leveling/rewards`),
+    addReward: (guildId: string, body: { level: number; role_id: string }) =>
+      request<ApiResponse<unknown>>(`/guilds/${guildId}/leveling/rewards`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+    removeReward: (guildId: string, level: number) =>
+      request<ApiResponse<unknown>>(`/guilds/${guildId}/leveling/rewards/${level}`, {
+        method: 'DELETE',
+      }),
   },
   giveaways: {
     list: (guildId: string, params?: { page?: number; pageSize?: number; status?: string }) =>
@@ -173,6 +191,48 @@ export const api = {
   reminders: {
     list: (guildId: string, params?: { page?: number; pageSize?: number; status?: string }) =>
       request<ApiListResponse<unknown>>(`/guilds/${guildId}/reminders${buildQuery(params || {})}`),
+  },
+  auditLogs: {
+    list: (guildId: string, params?: { page?: number; limit?: number; action?: string; moderator?: string; from?: string; to?: string }) =>
+      request<ApiListResponse<unknown>>(`/guilds/${guildId}/audit-logs${buildQuery(params || {})}`),
+    stats: (guildId: string) =>
+      request<ApiResponse<{ total: number; by_action: Record<string, number> }>>(`/guilds/${guildId}/audit-logs/stats`),
+  },
+  autoResponses: {
+    list: (guildId: string) =>
+      request<ApiResponse<unknown[]>>(`/guilds/${guildId}/auto-responses`),
+    create: (guildId: string, body: Record<string, unknown>) =>
+      request<ApiResponse<unknown>>(`/guilds/${guildId}/auto-responses`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+    update: (guildId: string, id: number, body: Record<string, unknown>) =>
+      request<ApiResponse<unknown>>(`/guilds/${guildId}/auto-responses/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      }),
+    delete: (guildId: string, id: number) =>
+      request<ApiResponse<{ success: boolean }>>(`/guilds/${guildId}/auto-responses/${id}`, {
+        method: 'DELETE',
+      }),
+  },
+  tags: {
+    list: (guildId: string, params?: { search?: string }) =>
+      request<ApiResponse<unknown[]>>(`/guilds/${guildId}/tags${buildQuery(params || {})}`),
+    create: (guildId: string, body: Record<string, unknown>) =>
+      request<ApiResponse<unknown>>(`/guilds/${guildId}/tags`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+    update: (guildId: string, id: number, body: Record<string, unknown>) =>
+      request<ApiResponse<unknown>>(`/guilds/${guildId}/tags/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      }),
+    delete: (guildId: string, id: number) =>
+      request<ApiResponse<{ success: boolean }>>(`/guilds/${guildId}/tags/${id}`, {
+        method: 'DELETE',
+      }),
   },
   settings: {
     get: (guildId: string) =>

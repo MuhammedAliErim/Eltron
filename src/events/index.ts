@@ -2,6 +2,7 @@ import { Event } from '../structures/Event';
 
 import Ready from './ready/Ready';
 import MessageCreate from './message/MessageCreate';
+import AutoResponseHandler from './message/AutoResponseHandler';
 import MessageDeleteSnipe from './message/MessageDeleteSnipe';
 import GuildMemberAdd from './guild/GuildMemberAdd';
 import GuildMemberRemove from './guild/GuildMemberRemove';
@@ -13,6 +14,7 @@ import ReactionRoleHandler, { ReactionRoleRemoveHandler } from './reaction/React
 export const events: Event<keyof import('discord.js').ClientEvents>[] = [
   new Ready(),
   new MessageCreate(),
+  new AutoResponseHandler(),
   new MessageDeleteSnipe(),
   new GuildMemberAdd(),
   new GuildMemberRemove(),

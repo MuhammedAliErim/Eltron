@@ -23,10 +23,14 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Welcome', href: '/welcome', icon: 'Star', section: 'COMMUNITY' },
   { label: 'Roles', href: '/roles', icon: 'Moderation', section: 'COMMUNITY' },
   { label: 'Leveling', href: '/leveling', icon: 'Levels', section: 'COMMUNITY' },
+  { label: 'Leveling Config', href: '/leveling-config', icon: 'Settings', section: 'COMMUNITY' },
   { label: 'Giveaways', href: '/giveaways', icon: 'Giveaways', section: 'ENGAGEMENT' },
   { label: 'Events', href: '/events', icon: 'Calendar', section: 'ENGAGEMENT' },
   { label: 'Polls', href: '/polls', icon: 'Analytics', section: 'ENGAGEMENT' },
   { label: 'Reminders', href: '/reminders', icon: 'Bell', section: 'ENGAGEMENT' },
+  { label: 'Audit Logs', href: '/audit-logs', icon: 'Activity', section: 'MANAGEMENT' },
+  { label: 'Auto-Responses', href: '/auto-responses', icon: 'Message', section: 'COMMUNITY' },
+  { label: 'Tags', href: '/tags', icon: 'Copy', section: 'COMMUNITY' },
   { label: 'Settings', href: '/settings', icon: 'Settings', section: 'SYSTEM' },
 ];
 
@@ -54,10 +58,14 @@ export const BREADCRUMB_MAP: Record<string, string> = {
   welcome: 'Welcome',
   roles: 'Roles',
   leveling: 'Leveling',
+  'leveling-config': 'Leveling Config',
   giveaways: 'Giveaways',
   events: 'Events',
   polls: 'Polls',
   reminders: 'Reminders',
+  'audit-logs': 'Audit Logs',
+  'auto-responses': 'Auto-Responses',
+  tags: 'Tags',
   settings: 'Settings',
   daily: 'Daily',
   weekly: 'Weekly',
@@ -109,6 +117,26 @@ export const POLL_STATUSES = [
   { label: 'Active', value: 'ACTIVE' },
   { label: 'Ended', value: 'ENDED' },
   { label: 'Cancelled', value: 'CANCELLED' },
+];
+
+export const AUDIT_LOG_ACTIONS = [
+  { label: 'Warn', value: 'WARN' },
+  { label: 'Timeout', value: 'TIMEOUT' },
+  { label: 'Kick', value: 'KICK' },
+  { label: 'Ban', value: 'BAN' },
+  { label: 'Unban', value: 'UNBAN' },
+  { label: 'Mute', value: 'MUTE' },
+  { label: 'AutoMod', value: 'AUTOMOD' },
+  { label: 'Role Update', value: 'ROLE_UPDATE' },
+  { label: 'Channel Update', value: 'CHANNEL_UPDATE' },
+  { label: 'Message Delete', value: 'MESSAGE_DELETE' },
+];
+
+export const AUTO_RESPONSE_MATCH_TYPES = [
+  { label: 'Exact', value: 'EXACT' },
+  { label: 'Contains', value: 'CONTAINS' },
+  { label: 'Starts With', value: 'STARTS_WITH' },
+  { label: 'Regex', value: 'REGEX' },
 ];
 
 export const REMINDER_STATUSES = [

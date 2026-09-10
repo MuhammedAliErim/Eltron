@@ -1,8 +1,9 @@
-import { Message, EmbedBuilder, Colors } from 'discord.js';
+import { Message, EmbedBuilder, Colors, TextChannel } from 'discord.js';
 import { UserXPRow, LeaderboardEntry } from '../../database/schema';
 import { LevelRepository } from '../../database/repositories/LevelRepository';
 import { Cache } from '../../utils/cache';
 import { logger } from '../../utils/logger';
+import { processLevelUp } from './LevelUpService';
 
 export const XP_BASE = 100;
 export const MIN_MESSAGE_XP = 5;
@@ -87,6 +88,11 @@ export const handleMessageXP = async (
         newLevel,
         xp: updatedUser.xp,
       }, 'User leveled up');
+
+      const member = message.member;
+      if (member && message.channel.isTextBased()) {
+        processLevelUp(message.guild, member, oldLevel, newLevel, message.channel as TextChannel).catch(() => {});
+      }
     }
 
     return {

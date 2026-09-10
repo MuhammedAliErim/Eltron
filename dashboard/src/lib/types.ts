@@ -264,6 +264,25 @@ export interface AutoRoleConfig {
   role_id: string | null;
 }
 
+export interface LevelingConfig {
+  enabled: boolean;
+  xpPerMessage: number;
+  cooldownSeconds: number;
+  levelUpMessage: string;
+  levelUpChannel: string | null;
+  levelUpEmbed: boolean;
+  xpMultiplier: number;
+  roleRewards: Record<string, string>;
+}
+
+export interface LevelRoleReward {
+  id: string;
+  guild_id: string;
+  level: number;
+  role_id: string;
+  created_at: string;
+}
+
 export interface LeaderboardEntry {
   user_id: string;
   xp: number;
@@ -393,4 +412,45 @@ export interface GuildSettings {
   language: string;
   timezone: string;
   settings: Record<string, unknown>;
+}
+
+export interface AuditLog {
+  id: number;
+  guild_id: string;
+  action: string;
+  moderator_id: string;
+  target_id: string | null;
+  target_type: string | null;
+  reason: string | null;
+  metadata: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface AuditLogStats {
+  total: number;
+  by_action: Record<string, number>;
+}
+
+export interface AutoResponse {
+  id: number;
+  guild_id: string;
+  trigger: string;
+  response: string;
+  match_type: string;
+  enabled: boolean;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Tag {
+  id: number;
+  guild_id: string;
+  name: string;
+  content: string;
+  aliases: string[];
+  use_count: number;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
 }
