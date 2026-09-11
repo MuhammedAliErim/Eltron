@@ -9,6 +9,10 @@ import { joinGiveaway, leaveGiveaway, createGiveawayEmbed } from '../../services
 import { joinEvent, leaveEvent, buildEventEmbed } from '../../services/event/EventService';
 import { vote, removeVote, buildPollEmbedBuilder, buildPollVoteButtons } from '../../services/poll/PollService';
 import { PollRepository } from '../../database/repositories/PollRepository';
+import { verifyCaptcha, verifyMathCaptcha } from '../../services/verification/CaptchaService';
+import { VerificationRepository } from '../../database/repositories/VerificationRepository';
+import { getVerificationConfigWithCache } from '../../services/security/VerificationConfig';
+import { handleButtonVerification } from '../../services/security/VerificationService';
 
 const COOLDOWN_SECONDS = 3;
 
@@ -118,6 +122,10 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
           }
         }
       }
+    } else if (interaction.customId.startsWith('captcha_code:')) {
+      await this.handleCaptchaCodeModal(client, interaction);
+    } else if (interaction.customId.startsWith('captcha_math:')) {
+      await this.handleCaptchaMathModal(client, interaction);
     }
   }
 
@@ -158,7 +166,7 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
 
     try {
       if (action === 'join') {
-        const result = await joinGiveaway(giveawayId, interaction.guildId, interaction.user.id, repo);
+        const result = await joinGiveaway(giveawayId, interaction.guildId, interaction.user.id, repo, client);
 
         const giveaway = await repo.getGiveaway(giveawayId);
         if (giveaway && result.entryCount > 0) {
@@ -371,6 +379,132 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
       }
     } catch (error) {
       logError(`Error handling poll button interaction`, error);
+      try {
+        if (!interaction.replied && !interaction.deferred) {
+          await interaction.reply({ content: 'An error occurred.', flags: MessageFlags.Ephemeral });
+        }
+      } catch {
+        // interaction may already be handled
+      }
+    }
+  }
+
+  private async handleCaptchaCodeModal(
+    client: EltronClient,
+    interaction: import('discord.js').ModalSubmitInteraction
+  ): Promise<void> {
+    const parts = interaction.customId.split(':');
+    if (parts.length !== 3) return;
+
+    const guildId = parts[1];
+    const userId = parts[2];
+
+    if (interaction.user.id !== userId) {
+      await interaction.reply({
+        content: 'This verification is not for you.',
+        flags: MessageFlags.Ephemeral,
+      });
+      return;
+    }
+
+    try {
+      const input = interaction.fields.getTextInputValue('captcha_input');
+      const result = verifyCaptcha(guildId, userId, input);
+
+      if (result.success) {
+        const member = await interaction.guild?.members.fetch(userId);
+        if (member) {
+          const verifyRepo = new VerificationRepository();
+          const config = await getVerificationConfigWithCache(
+            guildId,
+            (gid) => verifyRepo.getConfig(gid)
+          );
+
+          const verificationResult = await handleButtonVerification(member, config);
+          await interaction.reply({
+            content: verificationResult.message,
+            flags: MessageFlags.Ephemeral,
+          });
+        } else {
+          await interaction.reply({
+            content: 'Verification successful!',
+            flags: MessageFlags.Ephemeral,
+          });
+        }
+      } else {
+        const attemptsMsg = result.attemptsRemaining > 0
+          ? ` (${result.attemptsRemaining} attempts remaining)`
+          : ' (no attempts remaining)';
+        await interaction.reply({
+          content: `Incorrect code.${attemptsMsg} Please try again with /verify.`,
+          flags: MessageFlags.Ephemeral,
+        });
+      }
+    } catch (error) {
+      logError(`Error in captcha code modal submit`, error);
+      try {
+        if (!interaction.replied && !interaction.deferred) {
+          await interaction.reply({ content: 'An error occurred.', flags: MessageFlags.Ephemeral });
+        }
+      } catch {
+        // interaction may already be handled
+      }
+    }
+  }
+
+  private async handleCaptchaMathModal(
+    client: EltronClient,
+    interaction: import('discord.js').ModalSubmitInteraction
+  ): Promise<void> {
+    const parts = interaction.customId.split(':');
+    if (parts.length !== 3) return;
+
+    const guildId = parts[1];
+    const userId = parts[2];
+
+    if (interaction.user.id !== userId) {
+      await interaction.reply({
+        content: 'This verification is not for you.',
+        flags: MessageFlags.Ephemeral,
+      });
+      return;
+    }
+
+    try {
+      const input = interaction.fields.getTextInputValue('captcha_answer');
+      const result = verifyMathCaptcha(guildId, userId, input);
+
+      if (result.success) {
+        const member = await interaction.guild?.members.fetch(userId);
+        if (member) {
+          const verifyRepo = new VerificationRepository();
+          const config = await getVerificationConfigWithCache(
+            guildId,
+            (gid) => verifyRepo.getConfig(gid)
+          );
+
+          const verificationResult = await handleButtonVerification(member, config);
+          await interaction.reply({
+            content: verificationResult.message,
+            flags: MessageFlags.Ephemeral,
+          });
+        } else {
+          await interaction.reply({
+            content: 'Verification successful!',
+            flags: MessageFlags.Ephemeral,
+          });
+        }
+      } else {
+        const attemptsMsg = result.attemptsRemaining > 0
+          ? ` (${result.attemptsRemaining} attempts remaining)`
+          : ' (no attempts remaining)';
+        await interaction.reply({
+          content: `Incorrect answer.${attemptsMsg} Please try again with /verify.`,
+          flags: MessageFlags.Ephemeral,
+        });
+      }
+    } catch (error) {
+      logError(`Error in captcha math modal submit`, error);
       try {
         if (!interaction.replied && !interaction.deferred) {
           await interaction.reply({ content: 'An error occurred.', flags: MessageFlags.Ephemeral });

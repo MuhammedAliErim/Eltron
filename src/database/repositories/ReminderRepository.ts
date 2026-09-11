@@ -15,6 +15,9 @@ export class ReminderRepository extends BaseRepository {
           message: data.message,
           remind_at: data.remind_at,
           status: 'PENDING',
+          recurring: data.recurring ?? false,
+          interval_ms: data.interval_ms ?? null,
+          next_run: data.next_run ?? null,
         })
         .select()
         .single();

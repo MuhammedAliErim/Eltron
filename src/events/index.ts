@@ -14,6 +14,7 @@ import MessageDeleteAuditLog, { MessageEditAuditLog } from './audit/MessageAudit
 import ReactionRoleHandler, { ReactionRoleRemoveHandler } from './reaction/ReactionRoleHandler';
 import AfkHandler from './message/AfkHandler';
 import CountingHandler from './message/CountingHandler';
+import VerificationCaptchaHandler from './interaction/VerificationCaptchaHandler';
 
 export const events: Event<keyof import('discord.js').ClientEvents>[] = [
   new Ready(),
@@ -33,4 +34,5 @@ export const events: Event<keyof import('discord.js').ClientEvents>[] = [
   new ReactionRoleRemoveHandler(),
   new AfkHandler(),
   new CountingHandler(),
+  new VerificationCaptchaHandler(),
 ];

@@ -2,6 +2,7 @@ import { SlashCommandBuilder, Colors, EmbedBuilder, APIEmbedField, MessageFlags 
 import { Command, type CommandExecuteOptions } from '../../structures/Command';
 import {
   createReminder,
+  createRecurringReminder,
   getReminderById,
   listUserReminders,
   cancelReminder,
@@ -43,6 +44,13 @@ export default class ReminderCommand extends Command {
       .setName('cancel')
       .setDescription('Cancel a reminder')
       .addIntegerOption(opt => opt.setName('id').setDescription('Reminder ID').setRequired(true))
+    )
+    .addSubcommand(sub => sub
+      .setName('repeat')
+      .setDescription('Set a recurring reminder')
+      .addChannelOption(opt => opt.setName('channel').setDescription('Channel to send reminder').setRequired(true))
+      .addStringOption(opt => opt.setName('interval').setDescription('Repeat interval (e.g. 1h, 30m, 1d)').setRequired(true))
+      .addStringOption(opt => opt.setName('message').setDescription('Reminder message').setRequired(true))
     );
 
   category = 'Utility';
@@ -154,6 +162,48 @@ export default class ReminderCommand extends Command {
             .setTitle('⏰ Reminder Cancelled')
             .setDescription(`Reminder #${id} has been cancelled.`)
             .setColor(Colors.Greyple);
+
+          await interaction.editReply({ embeds: [embed] });
+          break;
+        }
+
+        case 'repeat': {
+          await interaction.deferReply();
+
+          const channel = interaction.options.getChannel('channel', true);
+          const intervalRaw = interaction.options.getString('interval', true);
+          const message = interaction.options.getString('message', true);
+
+          const intervalMs = parseReminderDuration(intervalRaw);
+          if (intervalMs === null) {
+            throw new ValidationError('Invalid interval format. Use: 10s, 30m, 1h, 7d, 1w');
+          }
+
+          if (intervalMs < 60 * 1000) {
+            throw new ValidationError('Minimum recurring interval is 1 minute');
+          }
+
+          const reminder = await createRecurringReminder({
+            guildId,
+            channelId: channel.id,
+            userId: interaction.user.id,
+            userBot: interaction.user.bot,
+            message,
+            intervalMs,
+          });
+
+          const embed = new EmbedBuilder()
+            .setTitle('🔁 Recurring Reminder Set')
+            .setDescription(`I'll remind you every <t:${Math.floor(intervalMs / 1000)}:R>`)
+            .addFields(
+              { name: 'Channel', value: `<#${channel.id}>`, inline: true },
+              { name: 'Interval', value: intervalRaw, inline: true },
+              { name: 'Message', value: message.substring(0, 1024) },
+              { name: 'ID', value: String(reminder.id), inline: true },
+            )
+            .setColor(Colors.Green)
+            .setFooter({ text: `Recurring Reminder #${reminder.id}` })
+            .setTimestamp();
 
           await interaction.editReply({ embeds: [embed] });
           break;

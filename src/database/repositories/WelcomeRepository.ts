@@ -19,6 +19,11 @@ const DEFAULT_CONFIG: WelcomeConfigRow = {
   goodbye_embed_title: 'Goodbye!',
   goodbye_embed_description: 'Goodbye {user}, we will miss you!',
   goodbye_embed_color: '#FF0000',
+  use_embed: false,
+  embed_color: '#5865F2',
+  banner_url: null,
+  dm_message: null,
+  dm_enabled: false,
   created_at: '',
   updated_at: '',
 };

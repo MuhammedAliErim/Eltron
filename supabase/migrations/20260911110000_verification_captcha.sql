@@ -1,0 +1,3 @@
+ALTER TABLE IF EXISTS verification_sessions ADD COLUMN IF NOT EXISTS captcha_code TEXT;
+ALTER TABLE IF EXISTS verification_sessions ADD COLUMN IF NOT EXISTS attempts INTEGER DEFAULT 0;
+ALTER TABLE IF EXISTS verification_sessions ADD COLUMN IF NOT EXISTS max_attempts INTEGER DEFAULT 3;

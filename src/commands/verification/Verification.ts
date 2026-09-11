@@ -73,6 +73,23 @@ export default class VerificationCommand extends Command {
           opt.setName('user_id').setDescription('User ID to reset').setRequired(true)
         )
     )
+    .addSubcommand((sub) =>
+      sub
+        .setName('captcha')
+        .setDescription('Configure captcha verification')
+        .addBooleanOption((opt) =>
+          opt.setName('enabled').setDescription('Enable captcha').setRequired(true)
+        )
+        .addStringOption((opt) =>
+          opt
+            .setName('method')
+            .setDescription('Captcha method')
+            .addChoices(
+              { name: 'Math (solve equation)', value: 'math' },
+              { name: 'Code (enter code)', value: 'code' }
+            )
+        )
+    )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild);
 
   category = 'Security';
@@ -95,6 +112,8 @@ export default class VerificationCommand extends Command {
         return this.handleConfig(interaction);
       case 'reset':
         return this.handleReset(interaction);
+      case 'captcha':
+        return this.handleCaptcha(interaction);
     }
   }
 
@@ -177,6 +196,20 @@ export default class VerificationCommand extends Command {
 
     await interaction.editReply({
       content: `Verification state reset for user \`${userId}\`.`,
+    });
+  }
+
+  private async handleCaptcha(interaction: ChatInputCommandInteraction): Promise<void> {
+    const enabled = interaction.options.getBoolean('enabled', true);
+    const method = interaction.options.getString('method') || 'math';
+
+    await repo.updateConfig(interaction.guildId!, {
+      captcha_enabled: enabled,
+      captcha_method: method,
+    } as GuildVerificationConfigUpdate);
+
+    await interaction.editReply({
+      content: `Captcha ${enabled ? 'enabled' : 'disabled'}${enabled ? ` with method: ${method}` : ''}.`,
     });
   }
 }

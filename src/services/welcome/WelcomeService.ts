@@ -1,6 +1,8 @@
 import { GuildMember, TextChannel, EmbedBuilder } from 'discord.js';
 import { WelcomeConfigRow } from '../../database/schema';
 import { logger } from '../../utils/logger';
+import { generateWelcomeCard, generateGoodbyeCard } from './WelcomeImageGenerator';
+import { sendDmWelcome } from './DmWelcomeService';
 
 export const replaceVariables = (
   template: string,
@@ -33,18 +35,16 @@ export const sendWelcome = async (
     const textChannel = channel as TextChannel;
 
     if (config.welcome_use_embed) {
-      const description = replaceVariables(config.welcome_embed_description, member);
-      const title = replaceVariables(config.welcome_embed_title, member);
-      const color = hexToDecimal(config.welcome_embed_color || '#00FF00');
+      const { embed, attachment } = await generateWelcomeCard(
+        member,
+        config.embed_color || config.welcome_embed_color
+      );
 
-      const embed = new EmbedBuilder()
-        .setTitle(title)
-        .setDescription(description)
-        .setColor(isNaN(color) ? 0x00ff00 : color)
-        .setThumbnail(member.user.displayAvatarURL({ size: 256 }))
-        .setTimestamp();
-
-      await textChannel.send({ embeds: [embed] });
+      if (attachment) {
+        await textChannel.send({ embeds: [embed], files: [attachment] });
+      } else {
+        await textChannel.send({ embeds: [embed] });
+      }
     } else {
       const message = replaceVariables(config.welcome_message, member);
       await textChannel.send({ content: message });
@@ -55,6 +55,8 @@ export const sendWelcome = async (
       userId: member.id,
       channelId: config.welcome_channel_id,
     }, 'Welcome message sent');
+
+    await sendDmWelcome(member, config);
   } catch (error) {
     logger.error({
       err: error,
@@ -79,18 +81,16 @@ export const sendGoodbye = async (
     const textChannel = channel as TextChannel;
 
     if (config.goodbye_use_embed) {
-      const description = replaceVariables(config.goodbye_embed_description, member);
-      const title = replaceVariables(config.goodbye_embed_title, member);
-      const color = hexToDecimal(config.goodbye_embed_color || '#FF0000');
+      const { embed, attachment } = await generateGoodbyeCard(
+        member,
+        config.embed_color || config.goodbye_embed_color
+      );
 
-      const embed = new EmbedBuilder()
-        .setTitle(title)
-        .setDescription(description)
-        .setColor(isNaN(color) ? 0xff0000 : color)
-        .setThumbnail(member.user.displayAvatarURL({ size: 256 }))
-        .setTimestamp();
-
-      await textChannel.send({ embeds: [embed] });
+      if (attachment) {
+        await textChannel.send({ embeds: [embed], files: [attachment] });
+      } else {
+        await textChannel.send({ embeds: [embed] });
+      }
     } else {
       const message = replaceVariables(config.goodbye_message, member);
       await textChannel.send({ content: message });

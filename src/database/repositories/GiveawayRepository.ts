@@ -26,6 +26,9 @@ export class GiveawayRepository extends BaseRepository {
           winner_count: data.winner_count,
           ends_at: data.ends_at,
           status: 'ACTIVE',
+          required_role_id: data.required_role_id || null,
+          required_level: data.required_level ?? 0,
+          max_entries: data.max_entries ?? 0,
         })
         .select()
         .single();

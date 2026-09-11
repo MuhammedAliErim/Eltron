@@ -19,6 +19,7 @@ import Untimeout from './moderation/Untimeout';
 import Unwarn from './moderation/Unwarn';
 import Warn from './moderation/Warn';
 import Warnings from './moderation/Warnings';
+import ModNote from './moderation/ModNote';
 import Poll from './poll/Poll';
 import Quarantine from './quarantine/Quarantine';
 import Reminder from './reminder/Reminder';
@@ -50,8 +51,11 @@ import Verification from './verification/Verification';
 import Verify from './verification/Verify';
 import Welcome from './welcome/Welcome';
 import Goodbye from './welcome/Goodbye';
+import WelcomeConfig from './welcome/WelcomeConfig';
 import Afk from './utility/Afk';
+import EmojiStats from './utility/EmojiStats';
 import Counting from './fun/Counting';
+import Template from './settings/Template';
 
 export const commands: Command[] = [
   new Analytics(),
@@ -73,6 +77,7 @@ export const commands: Command[] = [
   new Unwarn(),
   new Warn(),
   new Warnings(),
+  new ModNote(),
   new Poll(),
   new Quarantine(),
   new Reminder(),
@@ -104,6 +109,9 @@ export const commands: Command[] = [
   new Verify(),
   new Welcome(),
   new Goodbye(),
+  new WelcomeConfig(),
   new Afk(),
+  new EmojiStats(),
   new Counting(),
+  new Template(),
 ];

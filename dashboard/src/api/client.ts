@@ -292,4 +292,21 @@ export const api = {
         body: JSON.stringify(body),
       }),
   },
+  bot: {
+    getStatus: () =>
+      request<ApiResponse<import('../lib/types').BotStatus>>('/bot'),
+  },
+  emojiStats: {
+    get: (guildId: string) =>
+      request<ApiResponse<import('../lib/types').EmojiStats>>(`/guilds/${guildId}/emoji-stats`),
+  },
+  template: {
+    export: (guildId: string) =>
+      request<ApiResponse<import('../lib/types').ServerTemplate>>(`/guilds/${guildId}/template`),
+    import: (guildId: string, config: Record<string, unknown>) =>
+      request<ApiResponse<{ success: boolean }>>(`/guilds/${guildId}/template`, {
+        method: 'POST',
+        body: JSON.stringify({ config }),
+      }),
+  },
 };

@@ -33,6 +33,10 @@ import tagRoutes from './routes/tags';
 import customCommandsRoutes from './routes/customCommands';
 import countingRoutes from './routes/counting';
 import statsChannelsRoutes from './routes/statsChannels';
+import templateRoutes from './routes/template';
+import emojiStatsRoutes from './routes/emojiStats';
+import modNotesRoutes from './routes/modNotes';
+import botStatusRoutes, { setBotStatusClient } from './routes/botStatus';
 
 const app = express();
 
@@ -95,6 +99,7 @@ if (env.NODE_ENV === 'production') {
 }
 
 app.use('/api', healthRoutes);
+app.use('/api/bot', botStatusRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/guilds', guildRoutes);
 app.use('/api/guilds', analyticsRoutes);
@@ -120,6 +125,9 @@ app.use('/api/guilds', tagRoutes);
 app.use('/api/guilds', customCommandsRoutes);
 app.use('/api/guilds', countingRoutes);
 app.use('/api/guilds', statsChannelsRoutes);
+app.use('/api/guilds', modNotesRoutes);
+app.use('/api/guilds', templateRoutes);
+app.use('/api/guilds', emojiStatsRoutes);
 app.use('/api/guilds/:id/audit-logs', auditLogsRoutes);
 
 const dashboardDistPath = fs.existsSync(path.join(__dirname, 'dashboard'))

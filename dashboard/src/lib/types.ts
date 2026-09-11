@@ -497,3 +497,35 @@ export interface StatsChannel {
   last_updated: string;
   created_at: string;
 }
+
+export interface BotStatus {
+  uptime: number;
+  guilds: number;
+  users: number;
+  commands: number;
+  memory: { used: number; total: number };
+  ping: number;
+  nodeVersion: string;
+  discordJsVersion: string;
+  gatewayStatus: string;
+}
+
+export interface EmojiInfo {
+  name: string;
+  id: string | null;
+  animated: boolean;
+  url: string;
+}
+
+export interface EmojiStats {
+  total: number;
+  animated: number;
+  static: number;
+  emojis: EmojiInfo[];
+}
+
+export interface ServerTemplate {
+  guild_id: string;
+  settings: Record<string, unknown>;
+  created_at: string;
+}

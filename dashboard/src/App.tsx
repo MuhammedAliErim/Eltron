@@ -32,6 +32,9 @@ import { CustomCommandsPage } from './pages/CustomCommandsPage';
 import { CountingPage } from './pages/CountingPage';
 import { StatsChannelsPage } from './pages/StatsChannelsPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { BotStatusPage } from './pages/BotStatusPage';
+import { EmojiStatsPage } from './pages/EmojiStatsPage';
+import { ServerTemplatePage } from './pages/ServerTemplatePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { Icon } from './components/ui/Icon';
 
@@ -96,6 +99,9 @@ function AppRoutes() {
       <Route path="/counting" element={<ProtectedRoute><ErrorBoundary><CountingPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/stats-channels" element={<ProtectedRoute><ErrorBoundary><StatsChannelsPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><ErrorBoundary><SettingsPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/bot-status" element={<ProtectedRoute><ErrorBoundary><BotStatusPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/emoji-stats" element={<ProtectedRoute><ErrorBoundary><EmojiStatsPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/template" element={<ProtectedRoute><ErrorBoundary><ServerTemplatePage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

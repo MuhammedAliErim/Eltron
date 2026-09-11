@@ -237,6 +237,8 @@ export interface GuildVerificationConfigUpdate {
   rate_limit_window_seconds?: number;
   rate_limit_max_attempts?: number;
   log_channel_id?: string | null;
+  captcha_enabled?: boolean;
+  captcha_method?: string;
 }
 
 export type QuarantineAction = 'QUARANTINE' | 'RELEASE';
@@ -446,6 +448,11 @@ export interface WelcomeConfigRow {
   goodbye_embed_title: string;
   goodbye_embed_description: string;
   goodbye_embed_color: string;
+  use_embed: boolean;
+  embed_color: string;
+  banner_url: string | null;
+  dm_message: string | null;
+  dm_enabled: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -465,6 +472,11 @@ export interface WelcomeConfigUpdate {
   goodbye_embed_title?: string;
   goodbye_embed_description?: string;
   goodbye_embed_color?: string;
+  use_embed?: boolean;
+  embed_color?: string;
+  banner_url?: string | null;
+  dm_message?: string | null;
+  dm_enabled?: boolean;
 }
 
 export interface AutoRoleConfigRow {
@@ -519,6 +531,9 @@ export interface GiveawayRow {
   winner_count: number;
   ends_at: string;
   status: GiveawayStatus;
+  required_role_id: string | null;
+  required_level: number;
+  max_entries: number;
   created_at: string;
   updated_at: string;
 }
@@ -532,11 +547,18 @@ export interface GiveawayCreate {
   description?: string;
   winner_count: number;
   ends_at: string;
+  required_role_id?: string;
+  required_level?: number;
+  max_entries?: number;
 }
 
 export interface GiveawayUpdate {
   message_id?: string | null;
   status?: GiveawayStatus;
+  required_role_id?: string | null;
+  required_level?: number;
+  max_entries?: number;
+  winner_count?: number;
 }
 
 export interface GiveawayEntryRow {
@@ -721,6 +743,9 @@ export interface ReminderRow {
   message: string;
   remind_at: string;
   status: ReminderStatus;
+  recurring: boolean;
+  interval_ms: number | null;
+  next_run: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -731,10 +756,17 @@ export interface ReminderCreate {
   channel_id: string;
   message: string;
   remind_at: string;
+  recurring?: boolean;
+  interval_ms?: number;
+  next_run?: string;
 }
 
 export interface ReminderUpdate {
   status?: ReminderStatus;
+  remind_at?: string;
+  recurring?: boolean;
+  interval_ms?: number | null;
+  next_run?: string | null;
 }
 
 export interface AnalyticsDailyRow {
@@ -863,4 +895,20 @@ export interface ReactionRoleUpdate {
   color?: string;
   max_uses?: number;
   current_uses?: number;
+}
+
+export interface ModNoteRow {
+  id: string;
+  guild_id: string;
+  user_id: string;
+  moderator_id: string;
+  note: string;
+  created_at: string;
+}
+
+export interface ModNoteCreate {
+  guild_id: string;
+  user_id: string;
+  moderator_id: string;
+  note: string;
 }

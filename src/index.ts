@@ -10,6 +10,8 @@ import { restorePollTimers } from './services/poll/PollService';
 import { restoreReminderTimers } from './services/reminder/ReminderService';
 import { restoreScheduledTasks, setTaskClient } from './services/task/ScheduledTaskService';
 import { startApiServer, getApiServer } from './api/server';
+import { setBotStatusClient } from './api/routes/botStatus';
+import { setEmojiStatsClient } from './api/routes/emojiStats';
 import type { Server } from 'http';
 
 let client: EltronClient;
@@ -24,6 +26,9 @@ const main = async (): Promise<void> => {
 
     client = new EltronClient();
     await client.start();
+
+    setBotStatusClient(client);
+    setEmojiStatsClient(client);
 
     const giveawayRepo = new GiveawayRepository();
     await restoreGiveawayTimers(giveawayRepo, client);

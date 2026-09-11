@@ -114,6 +114,68 @@ export async function listUserReminders(
   return reminderRepository.getUserReminders(userId, guildId, 'PENDING');
 }
 
+export async function createRecurringReminder(params: {
+  guildId: string;
+  channelId: string;
+  userId: string;
+  userBot?: boolean;
+  message: string;
+  intervalMs: number;
+}): Promise<ReminderRow> {
+  if (params.userBot) {
+    throw new MissingPermissionsError('Bots cannot create reminders');
+  }
+
+  if (!params.guildId) {
+    throw new BusinessRuleError('Reminders can only be created in a server');
+  }
+
+  if (!params.message || params.message.trim().length === 0) {
+    throw new ValidationError('Reminder message is required');
+  }
+
+  if (params.message.length > MAX_MESSAGE_LENGTH) {
+    throw new ValidationError(`Reminder message must be ${MAX_MESSAGE_LENGTH} characters or less`);
+  }
+
+  if (params.intervalMs < MIN_REMINDER_MS) {
+    throw new ValidationError('Minimum reminder time is 10 seconds');
+  }
+
+  if (params.intervalMs > MAX_REMINDER_MS) {
+    throw new ValidationError('Maximum reminder time is 365 days');
+  }
+
+  const activeCount = await reminderRepository.countActiveReminders(params.userId, params.guildId);
+  if (activeCount >= MAX_ACTIVE_REMINDERS) {
+    throw new BusinessRuleError(`You have reached the maximum of ${MAX_ACTIVE_REMINDERS} active reminders`);
+  }
+
+  const nextRun = new Date(Date.now() + params.intervalMs).toISOString();
+
+  const reminder = await reminderRepository.createReminder({
+    guild_id: params.guildId,
+    user_id: params.userId,
+    channel_id: params.channelId,
+    message: params.message,
+    remind_at: nextRun,
+    recurring: true,
+    interval_ms: params.intervalMs,
+    next_run: nextRun,
+  });
+
+  logger.info({
+    guildId: params.guildId,
+    userId: params.userId,
+    reminderId: reminder.id,
+    action: 'RECURRING_REMINDER_CREATED',
+  }, 'Recurring reminder created');
+
+  scheduleReminderTimer(reminder);
+
+  return reminder;
+}
+
 export async function cancelReminder(
   reminderId: number,
   userId: string
@@ -163,7 +225,27 @@ export async function triggerReminder(
       });
     }
 
-    await reminderRepository.markTriggered(reminderId);
+    if (reminder.recurring && reminder.interval_ms) {
+      const nextRun = new Date(Date.now() + reminder.interval_ms).toISOString();
+      await reminderRepository.updateReminder(reminderId, {
+        remind_at: nextRun,
+        next_run: nextRun,
+      });
+
+      const updatedReminder = await reminderRepository.getReminder(reminderId);
+      if (updatedReminder && updatedReminder.status === 'PENDING') {
+        scheduleReminderTimer(updatedReminder);
+      }
+
+      logger.info({
+        guildId: reminder.guild_id,
+        userId: reminder.user_id,
+        reminderId,
+        action: 'RECURRING_REMINDER_RESCHEDULED',
+      }, 'Recurring reminder rescheduled');
+    } else {
+      await reminderRepository.markTriggered(reminderId);
+    }
 
     logger.info({
       guildId: reminder.guild_id,
@@ -174,7 +256,9 @@ export async function triggerReminder(
   } catch (error) {
     logError(`Error triggering reminder ${reminderId}`, error);
 
-    await reminderRepository.markTriggered(reminderId).catch(() => {});
+    if (!reminder.recurring) {
+      await reminderRepository.markTriggered(reminderId).catch(() => {});
+    }
 
     logger.warn({
       guildId: reminder.guild_id,
@@ -183,7 +267,9 @@ export async function triggerReminder(
       action: 'REMINDER_FAILED',
     }, 'Reminder failed to send');
   } finally {
-    reminderTimers.delete(String(reminderId));
+    if (!reminder.recurring) {
+      reminderTimers.delete(String(reminderId));
+    }
   }
 }
 

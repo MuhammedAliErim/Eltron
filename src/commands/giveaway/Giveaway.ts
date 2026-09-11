@@ -41,13 +41,19 @@ export default class GiveawayCommand extends Command {
           opt.setName('duration').setDescription('Duration (e.g. 30m, 1h, 7d)').setRequired(true)
         )
         .addIntegerOption((opt) =>
-          opt.setName('winners').setDescription('Number of winners (1-100)').setRequired(false)
+          opt.setName('winners').setDescription('Number of winners (1-20)').setRequired(false).setMinValue(1).setMaxValue(20)
         )
         .addChannelOption((opt) =>
           opt.setName('channel').setDescription('Channel to post in').setRequired(false)
         )
         .addStringOption((opt) =>
           opt.setName('description').setDescription('Giveaway description').setRequired(false)
+        )
+        .addRoleOption((opt) =>
+          opt.setName('required_role').setDescription('Role required to enter').setRequired(false)
+        )
+        .addIntegerOption((opt) =>
+          opt.setName('required_level').setDescription('Minimum level required').setRequired(false).setMinValue(0)
         )
     )
     .addSubcommand((sub) =>
@@ -134,6 +140,8 @@ export default class GiveawayCommand extends Command {
     const winnerCount = interaction.options.getInteger('winners') || 1;
     const channelOption = interaction.options.getChannel('channel');
     const description = interaction.options.getString('description') || '';
+    const requiredRole = interaction.options.getRole('required_role');
+    const requiredLevel = interaction.options.getInteger('required_level') || 0;
 
     if (!interaction.guildId) {
       await interaction.reply({ content: 'Guild context required.', flags: MessageFlags.Ephemeral });
@@ -191,6 +199,8 @@ export default class GiveawayCommand extends Command {
       description,
       winner_count: winnerCount,
       ends_at: endsAt,
+      required_role_id: requiredRole?.id || undefined,
+      required_level: requiredLevel,
     });
 
     const embed = createGiveawayEmbed(giveaway, 0);

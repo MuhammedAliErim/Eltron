@@ -35,6 +35,9 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Counting', href: '/counting', icon: 'Analytics', section: 'ENGAGEMENT' },
   { label: 'Stats Channels', href: '/stats-channels', icon: 'Analytics', section: 'MANAGEMENT' },
   { label: 'Settings', href: '/settings', icon: 'Settings', section: 'SYSTEM' },
+  { label: 'Bot Status', href: '/bot-status', icon: 'Activity', section: 'SYSTEM' },
+  { label: 'Emoji Stats', href: '/emoji-stats', icon: 'Analytics', section: 'SYSTEM' },
+  { label: 'Template', href: '/template', icon: 'Copy', section: 'SYSTEM' },
 ];
 
 export const NAV_SECTIONS = ['OVERVIEW', 'MANAGEMENT', 'COMMUNITY', 'ENGAGEMENT', 'SYSTEM'] as const;
@@ -73,6 +76,9 @@ export const BREADCRUMB_MAP: Record<string, string> = {
   counting: 'Counting',
   'stats-channels': 'Stats Channels',
   settings: 'Settings',
+  'bot-status': 'Bot Status',
+  'emoji-stats': 'Emoji Stats',
+  template: 'Template',
   daily: 'Daily',
   weekly: 'Weekly',
   monthly: 'Monthly',

@@ -63,5 +63,6 @@ export const rateLimits = {
   auth: rateLimit(10, 60_000),
   configPut: rateLimit(10, 60_000),
   normalGet: rateLimit(60, 60_000),
+  normalPost: rateLimit(30, 60_000),
   analytics: rateLimit(30, 60_000),
 };

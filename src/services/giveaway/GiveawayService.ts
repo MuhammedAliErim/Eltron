@@ -10,6 +10,7 @@ import {
   PermissionFlagsBits,
 } from 'discord.js';
 import { GiveawayRepository } from '../../database/repositories/GiveawayRepository';
+import { LevelRepository } from '../../database/repositories/LevelRepository';
 import { GiveawayRow, GiveawayWinnerRow } from '../../database/schema';
 import { logger } from '../../utils/logger';
 
@@ -132,7 +133,8 @@ export async function joinGiveaway(
   giveawayId: number,
   guildId: string,
   userId: string,
-  repo: GiveawayRepository
+  repo: GiveawayRepository,
+  client?: Client
 ): Promise<{ success: boolean; message: string; entryCount: number }> {
   const giveaway = await repo.getGiveaway(giveawayId);
   if (!giveaway) {
@@ -150,6 +152,37 @@ export async function joinGiveaway(
   const now = new Date();
   if (now >= new Date(giveaway.ends_at)) {
     return { success: false, message: 'This giveaway has ended.', entryCount: 0 };
+  }
+
+  if (giveaway.required_role_id && client) {
+    try {
+      const guild = await client.guilds.fetch(guildId);
+      const member = await guild.members.fetch(userId);
+      if (!member.roles.cache.has(giveaway.required_role_id)) {
+        return { success: false, message: `You need the <@&${giveaway.required_role_id}> role to enter this giveaway.`, entryCount: 0 };
+      }
+    } catch {
+      return { success: false, message: 'Could not verify your roles.', entryCount: 0 };
+    }
+  }
+
+  if (giveaway.required_level > 0) {
+    try {
+      const levelRepo = new LevelRepository();
+      const userXP = await levelRepo.getUserXP(guildId, userId);
+      if (!userXP || userXP.level < giveaway.required_level) {
+        return { success: false, message: `You need to be at least level ${giveaway.required_level} to enter this giveaway.`, entryCount: 0 };
+      }
+    } catch {
+      return { success: false, message: 'Could not verify your level.', entryCount: 0 };
+    }
+  }
+
+  if (giveaway.max_entries > 0) {
+    const currentCount = await repo.countEntries(giveawayId);
+    if (currentCount >= giveaway.max_entries) {
+      return { success: false, message: 'This giveaway has reached its maximum number of entries.', entryCount: currentCount };
+    }
   }
 
   try {
