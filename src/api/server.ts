@@ -30,6 +30,9 @@ import reactionRolesRoutes from './routes/reactionRoles';
 import autoResponsesRoutes from './routes/autoResponses';
 import auditLogsRoutes from './routes/auditLogs';
 import tagRoutes from './routes/tags';
+import customCommandsRoutes from './routes/customCommands';
+import countingRoutes from './routes/counting';
+import statsChannelsRoutes from './routes/statsChannels';
 
 const app = express();
 
@@ -114,6 +117,9 @@ app.use('/api/guilds', settingsRoutes);
 app.use('/api/guilds', reactionRolesRoutes);
 app.use('/api/guilds', autoResponsesRoutes);
 app.use('/api/guilds', tagRoutes);
+app.use('/api/guilds', customCommandsRoutes);
+app.use('/api/guilds', countingRoutes);
+app.use('/api/guilds', statsChannelsRoutes);
 app.use('/api/guilds/:id/audit-logs', auditLogsRoutes);
 
 const dashboardDistPath = fs.existsSync(path.join(__dirname, 'dashboard'))

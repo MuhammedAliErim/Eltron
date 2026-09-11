@@ -805,6 +805,29 @@ export interface AnalyticsSummary {
   xp_awarded: number;
 }
 
+export interface StatsChannelRow {
+  id: number;
+  guild_id: string;
+  channel_id: string;
+  stat_type: string;
+  format: string;
+  last_updated: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface StatsChannelCreate {
+  guild_id: string;
+  channel_id: string;
+  stat_type: string;
+  format: string;
+}
+
+export interface StatsChannelUpdate {
+  format?: string;
+  last_updated?: string | null;
+}
+
 export interface ReactionRoleRow {
   id: string;
   guild_id: string;

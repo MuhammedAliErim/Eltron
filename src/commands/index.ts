@@ -10,6 +10,7 @@ import EventCommand from './event/Event';
 import Giveaway from './giveaway/Giveaway';
 import Level from './level/Level';
 import Ban from './moderation/Ban';
+import CloneChannel from './moderation/CloneChannel';
 import Kick from './moderation/Kick';
 import Purge from './moderation/Purge';
 import Timeout from './moderation/Timeout';
@@ -22,6 +23,7 @@ import Poll from './poll/Poll';
 import Quarantine from './quarantine/Quarantine';
 import Reminder from './reminder/Reminder';
 import AutoRole from './role/AutoRole';
+import MassRole from './role/MassRole';
 import ReactionRole from './role/ReactionRole';
 import Role from './role/Role';
 import RoleInfo from './role/RoleInfo';
@@ -38,14 +40,18 @@ import Ping from './utility/Ping';
 import ServerInfo from './utility/ServerInfo';
 import Snipe from './utility/Snipe';
 import Stats from './utility/Stats';
+import StatsChannel from './utility/StatsChannel';
 import Tag from './utility/Tag';
 import Task from './utility/Task';
 import Uptime from './utility/Uptime';
 import UserInfo from './utility/UserInfo';
+import CustomCommand from './utility/CustomCommand';
 import Verification from './verification/Verification';
 import Verify from './verification/Verify';
 import Welcome from './welcome/Welcome';
 import Goodbye from './welcome/Goodbye';
+import Afk from './utility/Afk';
+import Counting from './fun/Counting';
 
 export const commands: Command[] = [
   new Analytics(),
@@ -58,6 +64,7 @@ export const commands: Command[] = [
   new Giveaway(),
   new Level(),
   new Ban(),
+  new CloneChannel(),
   new Kick(),
   new Purge(),
   new Timeout(),
@@ -70,6 +77,7 @@ export const commands: Command[] = [
   new Quarantine(),
   new Reminder(),
   new AutoRole(),
+  new MassRole(),
   new ReactionRole(),
   new Role(),
   new RoleInfo(),
@@ -86,12 +94,16 @@ export const commands: Command[] = [
   new ServerInfo(),
   new Snipe(),
   new Stats(),
+  new StatsChannel(),
   new Tag(),
   new Task(),
   new Uptime(),
   new UserInfo(),
+  new CustomCommand(),
   new Verification(),
   new Verify(),
   new Welcome(),
   new Goodbye(),
+  new Afk(),
+  new Counting(),
 ];

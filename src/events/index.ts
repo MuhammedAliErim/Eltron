@@ -1,8 +1,10 @@
 import { Event } from '../structures/Event';
 
 import Ready from './ready/Ready';
+import StatsChannelUpdater from './ready/StatsChannelUpdater';
 import MessageCreate from './message/MessageCreate';
 import AutoResponseHandler from './message/AutoResponseHandler';
+import CustomCommandHandler from './message/CustomCommandHandler';
 import MessageDeleteSnipe from './message/MessageDeleteSnipe';
 import GuildMemberAdd from './guild/GuildMemberAdd';
 import GuildMemberRemove from './guild/GuildMemberRemove';
@@ -10,11 +12,15 @@ import InteractionCreate from './interaction/InteractionCreate';
 import MemberAuditLog, { MemberRemoveAuditLog } from './audit/MemberAuditLog';
 import MessageDeleteAuditLog, { MessageEditAuditLog } from './audit/MessageAuditLog';
 import ReactionRoleHandler, { ReactionRoleRemoveHandler } from './reaction/ReactionRoleHandler';
+import AfkHandler from './message/AfkHandler';
+import CountingHandler from './message/CountingHandler';
 
 export const events: Event<keyof import('discord.js').ClientEvents>[] = [
   new Ready(),
+  new StatsChannelUpdater(),
   new MessageCreate(),
   new AutoResponseHandler(),
+  new CustomCommandHandler(),
   new MessageDeleteSnipe(),
   new GuildMemberAdd(),
   new GuildMemberRemove(),
@@ -25,4 +31,6 @@ export const events: Event<keyof import('discord.js').ClientEvents>[] = [
   new MessageEditAuditLog(),
   new ReactionRoleHandler(),
   new ReactionRoleRemoveHandler(),
+  new AfkHandler(),
+  new CountingHandler(),
 ];

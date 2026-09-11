@@ -31,6 +31,9 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Audit Logs', href: '/audit-logs', icon: 'Activity', section: 'MANAGEMENT' },
   { label: 'Auto-Responses', href: '/auto-responses', icon: 'Message', section: 'COMMUNITY' },
   { label: 'Tags', href: '/tags', icon: 'Copy', section: 'COMMUNITY' },
+  { label: 'Custom Commands', href: '/custom-commands', icon: 'Bot', section: 'COMMUNITY' },
+  { label: 'Counting', href: '/counting', icon: 'Analytics', section: 'ENGAGEMENT' },
+  { label: 'Stats Channels', href: '/stats-channels', icon: 'Analytics', section: 'MANAGEMENT' },
   { label: 'Settings', href: '/settings', icon: 'Settings', section: 'SYSTEM' },
 ];
 
@@ -66,6 +69,9 @@ export const BREADCRUMB_MAP: Record<string, string> = {
   'audit-logs': 'Audit Logs',
   'auto-responses': 'Auto-Responses',
   tags: 'Tags',
+  'custom-commands': 'Custom Commands',
+  counting: 'Counting',
+  'stats-channels': 'Stats Channels',
   settings: 'Settings',
   daily: 'Daily',
   weekly: 'Weekly',

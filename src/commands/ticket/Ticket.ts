@@ -8,6 +8,7 @@ import {
 import { Command } from '../../structures/Command';
 import type { CommandExecuteOptions } from '../../structures/Command';
 import { TicketRepository } from '../../database/repositories/TicketRepository';
+import { TicketCategoryRepository } from '../../database/repositories/TicketCategoryRepository';
 import {
   createTicket,
   closeTicket,
@@ -19,6 +20,7 @@ import {
 import { TicketCategory } from '../../database/schema';
 
 const repo = new TicketRepository();
+const categoryRepo = new TicketCategoryRepository();
 
 export default class TicketCommand extends Command {
   data = new SlashCommandBuilder()
@@ -97,6 +99,36 @@ export default class TicketCommand extends Command {
               { name: 'Closed', value: 'CLOSED' },
             )
         )
+    )
+    .addSubcommand((sub) =>
+      sub
+        .setName('category')
+        .setDescription('Create a ticket category')
+        .addStringOption((opt) =>
+          opt.setName('name').setDescription('Category name').setRequired(true)
+        )
+        .addStringOption((opt) =>
+          opt.setName('emoji').setDescription('Category emoji').setRequired(true)
+        )
+        .addStringOption((opt) =>
+          opt.setName('description').setDescription('Category description').setRequired(false)
+        )
+    )
+    .addSubcommand((sub) =>
+      sub
+        .setName('categories')
+        .setDescription('List all ticket categories')
+    )
+    .addSubcommand((sub) =>
+      sub
+        .setName('setautoresponse')
+        .setDescription('Set auto-response for a category')
+        .addStringOption((opt) =>
+          opt.setName('category_id').setDescription('Category ID').setRequired(true)
+        )
+        .addStringOption((opt) =>
+          opt.setName('response').setDescription('Auto-response message').setRequired(true)
+        )
     );
 
   category = 'Staff';
@@ -122,6 +154,12 @@ export default class TicketCommand extends Command {
         return this.handleInfo(interaction);
       case 'list':
         return this.handleList(interaction);
+      case 'category':
+        return this.handleCategory(interaction);
+      case 'categories':
+        return this.handleCategories(interaction);
+      case 'setautoresponse':
+        return this.handleSetAutoResponse(interaction);
     }
   }
 
@@ -325,5 +363,72 @@ export default class TicketCommand extends Command {
     await interaction.editReply({
       content: lines.join('\n'),
     });
+  }
+
+  private async handleCategory(interaction: ChatInputCommandInteraction): Promise<void> {
+    if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)) {
+      await interaction.editReply({ content: 'You need Manage Server permission to perform this action.' });
+      return;
+    }
+
+    const name = interaction.options.getString('name', true);
+    const emoji = interaction.options.getString('emoji', true);
+    const description = interaction.options.getString('description') ?? '';
+
+    try {
+      const category = await categoryRepo.create({
+        guild_id: interaction.guildId!,
+        name,
+        emoji,
+        description,
+      });
+
+      await interaction.editReply({
+        content: `Category created: ${emoji} **${name}** (ID: \`${category.id}\`)`,
+      });
+    } catch (error) {
+      await interaction.editReply({ content: 'Failed to create category.' });
+    }
+  }
+
+  private async handleCategories(interaction: ChatInputCommandInteraction): Promise<void> {
+    try {
+      const categories = await categoryRepo.getByGuild(interaction.guildId!);
+
+      if (categories.length === 0) {
+        await interaction.editReply({ content: 'No ticket categories found.' });
+        return;
+      }
+
+      const lines = categories.map((c) => `${c.emoji} **${c.name}** — ${c.description || 'No description'} (ID: \`${c.id}\`)`);
+      await interaction.editReply({ content: lines.join('\n') });
+    } catch (error) {
+      await interaction.editReply({ content: 'Failed to fetch categories.' });
+    }
+  }
+
+  private async handleSetAutoResponse(interaction: ChatInputCommandInteraction): Promise<void> {
+    if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)) {
+      await interaction.editReply({ content: 'You need Manage Server permission to perform this action.' });
+      return;
+    }
+
+    const categoryId = interaction.options.getString('category_id', true);
+    const response = interaction.options.getString('response', true);
+
+    try {
+      const updated = await categoryRepo.update(categoryId, { auto_response: response });
+
+      if (!updated) {
+        await interaction.editReply({ content: 'Category not found.' });
+        return;
+      }
+
+      await interaction.editReply({
+        content: `Auto-response set for category **${updated.name}**.`,
+      });
+    } catch (error) {
+      await interaction.editReply({ content: 'Failed to set auto-response.' });
+    }
   }
 }

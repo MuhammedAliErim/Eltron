@@ -234,6 +234,55 @@ export const api = {
         method: 'DELETE',
       }),
   },
+  customCommands: {
+    list: (guildId: string) =>
+      request<ApiResponse<unknown[]>>(`/guilds/${guildId}/custom-commands`),
+    getByName: (guildId: string, name: string) =>
+      request<ApiResponse<unknown>>(`/guilds/${guildId}/custom-commands/${name}`),
+    create: (guildId: string, body: Record<string, unknown>) =>
+      request<ApiResponse<unknown>>(`/guilds/${guildId}/custom-commands`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+    update: (guildId: string, name: string, body: Record<string, unknown>) =>
+      request<ApiResponse<unknown>>(`/guilds/${guildId}/custom-commands/${name}`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      }),
+    delete: (guildId: string, name: string) =>
+      request<ApiResponse<{ success: boolean }>>(`/guilds/${guildId}/custom-commands/${name}`, {
+        method: 'DELETE',
+      }),
+  },
+  counting: {
+    getConfig: (guildId: string) =>
+      request<ApiResponse<unknown>>(`/guilds/${guildId}/counting/config`),
+    updateConfig: (guildId: string, body: Record<string, unknown>) =>
+      request<ApiResponse<unknown>>(`/guilds/${guildId}/counting/config`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      }),
+    getScores: (guildId: string) =>
+      request<ApiResponse<unknown[]>>(`/guilds/${guildId}/counting/scores`),
+  },
+  statsChannels: {
+    list: (guildId: string) =>
+      request<ApiResponse<unknown[]>>(`/guilds/${guildId}/stats-channels`),
+    create: (guildId: string, body: Record<string, unknown>) =>
+      request<ApiResponse<unknown>>(`/guilds/${guildId}/stats-channels`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+    delete: (guildId: string, id: string) =>
+      request<ApiResponse<{ success: boolean }>>(`/guilds/${guildId}/stats-channels/${id}`, {
+        method: 'DELETE',
+      }),
+    forceUpdate: (guildId: string, id: string) =>
+      request<ApiResponse<{ success: boolean }>>(`/guilds/${guildId}/stats-channels/update`, {
+        method: 'POST',
+        body: JSON.stringify({ id }),
+      }),
+  },
   settings: {
     get: (guildId: string) =>
       request<ApiResponse<unknown>>(`/guilds/${guildId}/settings`),

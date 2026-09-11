@@ -5,6 +5,16 @@ import { logger } from '../utils/logger';
 import { env } from '../config/env';
 import { commands } from '../commands';
 import { events } from '../events';
+import { formatDuration } from '../utils/duration';
+
+export interface BotStats {
+  commandCount: number;
+  eventCount: number;
+  guildCount: number;
+  uptimeMs: number;
+  uptimeFormatted: string;
+  cachedUsers: number;
+}
 
 export class EltronClient extends Client {
   public commands: Collection<string, Command> = new Collection();
@@ -41,6 +51,15 @@ export class EltronClient extends Client {
     this.on('rateLimit', (info) => {
       logger.warn({ info }, 'Discord rate limit hit');
     });
+
+    // Log shard reconnect lifecycle
+    this.on('shardReconnecting', (id) => {
+      logger.info({ shardId: id }, 'Discord shard reconnecting...');
+    });
+
+    this.on('shardResume', (id, replayedEvents) => {
+      logger.info({ shardId: id, replayedEvents }, 'Discord shard resumed');
+    });
   }
 
   async start(): Promise<void> {
@@ -58,6 +77,28 @@ export class EltronClient extends Client {
     this.removeAllListeners();
     this.destroy();
     logger.info('Bot shut down successfully');
+  }
+
+  /** Returns how long the bot has been running in milliseconds. */
+  getUptimeMs(): number {
+    return Date.now() - this.startTime;
+  }
+
+  /** Returns a human-readable uptime string (e.g. "3d 2h 15m"). */
+  getUptimeFormatted(): string {
+    return formatDuration(this.getUptimeMs());
+  }
+
+  /** Returns a snapshot of the bot's current runtime statistics. */
+  getStats(): BotStats {
+    return {
+      commandCount: this.commands.size,
+      eventCount: this.events.size,
+      guildCount: this.guilds.cache.size,
+      uptimeMs: this.getUptimeMs(),
+      uptimeFormatted: this.getUptimeFormatted(),
+      cachedUsers: this.users.cache.size,
+    };
   }
 
   clearCooldownTimers(): void {

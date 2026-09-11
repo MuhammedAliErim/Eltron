@@ -29,8 +29,35 @@ export class Cache<T> {
     });
   }
 
+  /**
+   * Cache-aside helper: returns cached value if it exists,
+   * otherwise calls `factory`, stores the result, and returns it.
+   */
+  async getOrSet(key: string, factory: () => Promise<T>, ttlMs?: number): Promise<T> {
+    const cached = this.get(key);
+    if (cached !== null) return cached;
+    const fresh = await factory();
+    this.set(key, fresh, ttlMs);
+    return fresh;
+  }
+
   delete(key: string): boolean {
     return this.store.delete(key);
+  }
+
+  /**
+   * Deletes all keys that start with the given prefix.
+   * Useful for invalidating a family of related keys (e.g. 'guild:123456:*').
+   */
+  invalidatePattern(prefix: string): number {
+    let count = 0;
+    for (const key of this.store.keys()) {
+      if (key.startsWith(prefix)) {
+        this.store.delete(key);
+        count++;
+      }
+    }
+    return count;
   }
 
   clear(): void {
@@ -47,7 +74,18 @@ export class Cache<T> {
     return true;
   }
 
+  /** Returns the count of non-expired entries. */
   get size(): number {
+    const now = Date.now();
+    let count = 0;
+    for (const entry of this.store.values()) {
+      if (now <= entry.expires) count++;
+    }
+    return count;
+  }
+
+  /** Returns the raw store size (including expired entries). Use `size` for live entries. */
+  get rawSize(): number {
     return this.store.size;
   }
 
@@ -88,3 +126,4 @@ export interface GuildCacheData {
 }
 
 export const guildCache = new Cache<GuildCacheData>(120000);
+

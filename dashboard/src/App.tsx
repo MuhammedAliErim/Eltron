@@ -28,6 +28,9 @@ import { RemindersPage } from './pages/RemindersPage';
 import { AuditLogsPage } from './pages/AuditLogsPage';
 import { AutoResponsesPage } from './pages/AutoResponsesPage';
 import { TagsPage } from './pages/TagsPage';
+import { CustomCommandsPage } from './pages/CustomCommandsPage';
+import { CountingPage } from './pages/CountingPage';
+import { StatsChannelsPage } from './pages/StatsChannelsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { Icon } from './components/ui/Icon';
@@ -89,6 +92,9 @@ function AppRoutes() {
       <Route path="/audit-logs" element={<ProtectedRoute><ErrorBoundary><AuditLogsPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/auto-responses" element={<ProtectedRoute><ErrorBoundary><AutoResponsesPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/tags" element={<ProtectedRoute><ErrorBoundary><TagsPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/custom-commands" element={<ProtectedRoute><ErrorBoundary><CustomCommandsPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/counting" element={<ProtectedRoute><ErrorBoundary><CountingPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/stats-channels" element={<ProtectedRoute><ErrorBoundary><StatsChannelsPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><ErrorBoundary><SettingsPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<NotFoundPage />} />

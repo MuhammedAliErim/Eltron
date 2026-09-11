@@ -454,3 +454,46 @@ export interface Tag {
   created_at: string;
   updated_at: string;
 }
+
+export interface CustomCommand {
+  id: number;
+  guild_id: string;
+  name: string;
+  response: string;
+  aliases: string[];
+  embed_color: string | null;
+  use_count: number;
+  enabled: boolean;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CountingConfig {
+  id: number;
+  guild_id: string;
+  channel_id: string | null;
+  current_number: number;
+  highest_number: number;
+  enabled: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CountingScore {
+  user_id: string;
+  score: number;
+  correct_count: number;
+  wrong_count: number;
+}
+
+export interface StatsChannel {
+  id: string;
+  guild_id: string;
+  channel_id: string;
+  channel_name: string;
+  type: string;
+  format: string;
+  last_updated: string;
+  created_at: string;
+}
