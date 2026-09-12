@@ -36,6 +36,8 @@ import statsChannelsRoutes from './routes/statsChannels';
 import templateRoutes from './routes/template';
 import emojiStatsRoutes from './routes/emojiStats';
 import modNotesRoutes from './routes/modNotes';
+import lockdownRoutes from './routes/lockdowns';
+import messageLogsRoutes from './routes/messageLogs';
 import botStatusRoutes, { setBotStatusClient } from './routes/botStatus';
 
 const app = express();
@@ -128,6 +130,8 @@ app.use('/api/guilds', statsChannelsRoutes);
 app.use('/api/guilds', modNotesRoutes);
 app.use('/api/guilds', templateRoutes);
 app.use('/api/guilds', emojiStatsRoutes);
+app.use('/api/guilds', lockdownRoutes);
+app.use('/api/guilds/:id/message-logs', messageLogsRoutes);
 app.use('/api/guilds/:id/audit-logs', auditLogsRoutes);
 
 const dashboardDistPath = fs.existsSync(path.join(__dirname, 'dashboard'))

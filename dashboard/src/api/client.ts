@@ -309,4 +309,44 @@ export const api = {
         body: JSON.stringify({ config }),
       }),
   },
+  messageLogs: {
+    get: (guildId: string, params?: { page?: number; limit?: number; action?: string; author?: string; channel?: string; search?: string }) =>
+      request<ApiListResponse<import('../lib/types').MessageLog>>(`/guilds/${guildId}/message-logs${buildQuery(params || {})}`),
+    search: (guildId: string, query: string) =>
+      request<ApiListResponse<import('../lib/types').MessageLog>>(`/guilds/${guildId}/message-logs${buildQuery({ search: query })}`),
+  },
+  lockdowns: {
+    get: (guildId: string) =>
+      request<ApiResponse<import('../lib/types').Lockdown[]>>(`/guilds/${guildId}/lockdowns`),
+    lock: (guildId: string, body: { channel_id: string; reason?: string; duration_minutes?: number }) =>
+      request<ApiResponse<import('../lib/types').Lockdown>>(`/guilds/${guildId}/lockdowns`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+    unlock: (guildId: string, body: { channel_id?: string; all?: boolean }) =>
+      request<ApiResponse<{ success: boolean }>>(`/guilds/${guildId}/lockdowns/unlock`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+  },
+  banAppeals: {
+    get: (guildId: string, params?: { status?: string; page?: number }) =>
+      request<ApiListResponse<import('../lib/types').BanAppeal>>(`/guilds/${guildId}/ban-appeals${buildQuery(params || {})}`),
+    review: (guildId: string, id: number, body: { status: 'APPROVED' | 'DENIED'; note?: string }) =>
+      request<ApiResponse<import('../lib/types').BanAppeal>>(`/guilds/${guildId}/ban-appeals/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      }),
+  },
+  starboard: {
+    getConfig: (guildId: string) =>
+      request<ApiResponse<import('../lib/types').StarboardConfig>>(`/guilds/${guildId}/starboard/config`),
+    updateConfig: (guildId: string, body: Record<string, unknown>) =>
+      request<ApiResponse<import('../lib/types').StarboardConfig>>(`/guilds/${guildId}/starboard/config`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      }),
+    getTop: (guildId: string) =>
+      request<ApiResponse<import('../lib/types').StarboardEntry[]>>(`/guilds/${guildId}/starboard/top`),
+  },
 };

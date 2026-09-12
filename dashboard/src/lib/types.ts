@@ -529,3 +529,60 @@ export interface ServerTemplate {
   settings: Record<string, unknown>;
   created_at: string;
 }
+
+export interface MessageLog {
+  id: number;
+  guild_id: string;
+  channel_id: string;
+  author_id: string;
+  action: 'EDIT' | 'DELETE';
+  old_content: string | null;
+  new_content: string | null;
+  message_id: string;
+  created_at: string;
+}
+
+export interface Lockdown {
+  id: number;
+  guild_id: string;
+  channel_id: string;
+  locked_by: string;
+  reason: string | null;
+  duration_minutes: number | null;
+  auto_unlock: boolean;
+  unlocked_at: string | null;
+  created_at: string;
+}
+
+export interface BanAppeal {
+  id: number;
+  guild_id: string;
+  user_id: string;
+  reason: string;
+  status: 'PENDING' | 'APPROVED' | 'DENIED';
+  reviewer: string | null;
+  review_note: string | null;
+  reviewed_at: string | null;
+  created_at: string;
+}
+
+export interface StarboardConfig {
+  guild_id: string;
+  enabled: boolean;
+  channel_id: string | null;
+  threshold: number;
+  emoji: string;
+  self_star: boolean;
+}
+
+export interface StarboardEntry {
+  id: number;
+  guild_id: string;
+  channel_id: string;
+  message_id: string;
+  author_id: string;
+  content: string;
+  star_count: number;
+  starboard_message_id: string | null;
+  created_at: string;
+}

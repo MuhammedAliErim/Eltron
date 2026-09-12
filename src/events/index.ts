@@ -12,9 +12,12 @@ import InteractionCreate from './interaction/InteractionCreate';
 import MemberAuditLog, { MemberRemoveAuditLog } from './audit/MemberAuditLog';
 import MessageDeleteAuditLog, { MessageEditAuditLog } from './audit/MessageAuditLog';
 import ReactionRoleHandler, { ReactionRoleRemoveHandler } from './reaction/ReactionRoleHandler';
+import StarboardAddHandler, { StarboardRemoveHandler } from './reaction/StarboardHandler';
 import AfkHandler from './message/AfkHandler';
 import CountingHandler from './message/CountingHandler';
 import VerificationCaptchaHandler from './interaction/VerificationCaptchaHandler';
+import BanAppealHandler from './interaction/BanAppealHandler';
+import LockdownChecker from './ready/LockdownChecker';
 
 export const events: Event<keyof import('discord.js').ClientEvents>[] = [
   new Ready(),
@@ -32,7 +35,11 @@ export const events: Event<keyof import('discord.js').ClientEvents>[] = [
   new MessageEditAuditLog(),
   new ReactionRoleHandler(),
   new ReactionRoleRemoveHandler(),
+  new StarboardAddHandler(),
+  new StarboardRemoveHandler(),
   new AfkHandler(),
   new CountingHandler(),
   new VerificationCaptchaHandler(),
+  new BanAppealHandler(),
+  new LockdownChecker(),
 ];

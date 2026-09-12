@@ -35,6 +35,10 @@ import { SettingsPage } from './pages/SettingsPage';
 import { BotStatusPage } from './pages/BotStatusPage';
 import { EmojiStatsPage } from './pages/EmojiStatsPage';
 import { ServerTemplatePage } from './pages/ServerTemplatePage';
+import { MessageLogsPage } from './pages/MessageLogsPage';
+import { LockdownsPage } from './pages/LockdownsPage';
+import { BanAppealsPage } from './pages/BanAppealsPage';
+import { StarboardPage } from './pages/StarboardPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { Icon } from './components/ui/Icon';
 
@@ -79,6 +83,10 @@ function AppRoutes() {
       <Route path="/commands" element={<ProtectedRoute><ErrorBoundary><CommandsPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/analytics" element={<ProtectedRoute><ErrorBoundary><AnalyticsPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/moderation" element={<ProtectedRoute><ErrorBoundary><ModerationPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/message-logs" element={<ProtectedRoute><ErrorBoundary><MessageLogsPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/lockdowns" element={<ProtectedRoute><ErrorBoundary><LockdownsPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/ban-appeals" element={<ProtectedRoute><ErrorBoundary><BanAppealsPage /></ErrorBoundary></ProtectedRoute>} />
+      <Route path="/starboard" element={<ProtectedRoute><ErrorBoundary><StarboardPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/automod" element={<ProtectedRoute><ErrorBoundary><AutoModPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/security" element={<ProtectedRoute><ErrorBoundary><SecurityPage /></ErrorBoundary></ProtectedRoute>} />
       <Route path="/tickets" element={<ProtectedRoute><ErrorBoundary><TicketsPage /></ErrorBoundary></ProtectedRoute>} />

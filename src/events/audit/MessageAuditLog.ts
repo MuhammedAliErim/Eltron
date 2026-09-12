@@ -2,6 +2,7 @@ import { Message, PartialMessage, TextChannel } from 'discord.js';
 import { Event } from '../../structures/Event';
 import { EltronClient } from '../../structures/EltronClient';
 import { AuditLogService } from '../../services/audit-log/AuditLogService';
+import { MessageLogService } from '../../services/message-log/MessageLogService';
 import { logger } from '../../utils/logger';
 
 export default class MessageDeleteAuditLog extends Event<'messageDelete'> {
@@ -21,6 +22,7 @@ export default class MessageDeleteAuditLog extends Event<'messageDelete'> {
         message.author.id,
         message.content
       );
+      await MessageLogService.logDelete(message);
     } catch (error) {
       logger.error({ err: error, guildId: message.guild.id, messageId: message.id }, 'Failed to log message delete audit');
     }
@@ -50,6 +52,7 @@ export class MessageEditAuditLog extends Event<'messageUpdate'> {
         oldContent,
         newContent
       );
+      await MessageLogService.logEdit(newMessage, oldContent);
     } catch (error) {
       logger.error({ err: error, guildId: oldMessage.guild.id, messageId: oldMessage.id }, 'Failed to log message edit audit');
     }

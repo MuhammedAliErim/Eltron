@@ -10,9 +10,12 @@ import EventCommand from './event/Event';
 import Giveaway from './giveaway/Giveaway';
 import Level from './level/Level';
 import Ban from './moderation/Ban';
+import BanAppeal from './moderation/BanAppeal';
 import CloneChannel from './moderation/CloneChannel';
 import Kick from './moderation/Kick';
+import MessageLog from './moderation/MessageLog';
 import Purge from './moderation/Purge';
+import Starboard from './moderation/Starboard';
 import Timeout from './moderation/Timeout';
 import Unban from './moderation/Unban';
 import Untimeout from './moderation/Untimeout';
@@ -56,6 +59,11 @@ import Afk from './utility/Afk';
 import EmojiStats from './utility/EmojiStats';
 import Counting from './fun/Counting';
 import Template from './settings/Template';
+import VoiceMove from './voice/VoiceMove';
+import VoiceDisconnect from './voice/VoiceDisconnect';
+import VoiceMute from './voice/VoiceMute';
+import VoiceDeafen from './voice/VoiceDeafen';
+import Lockdown from './moderation/Lockdown';
 
 export const commands: Command[] = [
   new Analytics(),
@@ -68,9 +76,12 @@ export const commands: Command[] = [
   new Giveaway(),
   new Level(),
   new Ban(),
+  new BanAppeal(),
   new CloneChannel(),
   new Kick(),
+  new MessageLog(),
   new Purge(),
+  new Starboard(),
   new Timeout(),
   new Unban(),
   new Untimeout(),
@@ -114,4 +125,9 @@ export const commands: Command[] = [
   new EmojiStats(),
   new Counting(),
   new Template(),
+  new VoiceMove(),
+  new VoiceDisconnect(),
+  new VoiceMute(),
+  new VoiceDeafen(),
+  new Lockdown(),
 ];
